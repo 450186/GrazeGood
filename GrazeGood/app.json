@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "GrazeGood",
+    "slug": "graze-good",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/GrazeLogo.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/GrazeLogo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/GrazeLogo.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "favicon": "./assets/GrazeLogo.png"
+    },
+    "plugins": [
+      "expo-barcode-scanner"
+    ]
+  }
+}
