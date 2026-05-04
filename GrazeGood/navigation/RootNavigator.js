@@ -50,7 +50,8 @@ export default function RootNavigator() {
           color: "#A0AF84",
           fontSize: 30,
       },
-      headerBackVisible: false,
+      headerBackVisible: true,
+      headerBackButtonDisplayMode: "minimal",
       }}>
       {user ? (
         <>

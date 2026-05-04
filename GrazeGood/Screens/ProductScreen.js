@@ -114,7 +114,21 @@ export default function ProductScreen({ route }) {
     const hasIngredients = 
     product.ingredients?.length > 0 || 
     product.ingredients_text?.trim()?.length > 0;
-  const nutriments = product.nutriments ?? {};
+
+    const nutriments = product.nutriments ?? {};
+
+    const showNutrimentKeys = [
+      "energy-kcal_100g",
+      "fat_100g",
+      "saturated-fat_100g",
+      "sugars_100g",
+      "salt_100g",
+      "carbohydrates_100g",
+      "proteins_100g",
+      "fiber_100g",
+    ]
+
+    const hasNutriments = showNutrimentKeys.some(key => nutriments[key] != null);
   return (
     <ScrollView
       style={styles.Page}
@@ -152,6 +166,8 @@ export default function ProductScreen({ route }) {
         ))}
       </View>
       <View style={styles.divider} />
+      {hasNutriments && (
+        <>
       <Text style={styles.SectionTitle}>Nutrition Information</Text>
       <Text style={styles.SectionSubtitle}>per 100g</Text>
       <View style={styles.nutritionContainer}>
@@ -160,7 +176,7 @@ export default function ProductScreen({ route }) {
           value={nutriments["energy-kcal_100g"]}
           unit="kcal"
         />
-        {nutriments["energy-kcal_100g"] !== null && <View style={styles.rowDivider} />}
+        {nutriments["energy-kcal_100g"] != null && <View style={styles.rowDivider} />}
         <NutritionRow
           label="Fat"
           value={nutriments["fat_100g"]}
@@ -173,7 +189,7 @@ export default function ProductScreen({ route }) {
           unit="g"
           sub
         />
-        {nutriments["fat_100g"] !== null && nutriments["saturated-fat_100g"] !== null && <View style={styles.rowDivider} />}
+        {nutriments["fat_100g"] != null && <View style={styles.rowDivider} />}
         <NutritionRow
           label="Carbohydrates"
           value={nutriments["carbohydrates_100g"]}
@@ -186,27 +202,29 @@ export default function ProductScreen({ route }) {
           levelType="sugar"
           sub
         />
-        {nutriments["sugars_100g"] !== null && <View style={styles.rowDivider} />}
+        {nutriments["sugars_100g"] != null && <View style={styles.rowDivider} />}
         <NutritionRow
           label="Protein"
           value={nutriments["proteins_100g"]}
           unit="g"
         />
-        {nutriments["proteins_100g"] !== null && <View style={styles.rowDivider} />}
+        {nutriments["proteins_100g"] != null && <View style={styles.rowDivider} />}
         <NutritionRow
           label="Salt"
           value={nutriments["salt_100g"]}
           unit="g"
           levelType="salt"
         />
-        {nutriments["salt_100g"] !== null && <View style={styles.rowDivider} />}
+        {nutriments["salt_100g"] != null && <View style={styles.rowDivider} />}
         <NutritionRow
           label="Fiber"
           value={nutriments["fiber_100g"]}
           unit="g"
         />
       </View>
-      {nutriments["fiber_100g"] !== null && <View style={styles.divider} />}
+      </>
+      )}
+      {nutriments["fiber_100g"] != null && <View style={styles.divider} />}
       {hasIngredients && (
         <>
         <Text style={styles.SectionTitle}>Ingredients</Text>
@@ -225,7 +243,7 @@ export default function ProductScreen({ route }) {
                     ]}
                     >
                     <FontAwesome
-                        name={impact !== "none" ? "exclamation-triangle" : "caret-right"}
+                        name={impact !== "none" ? "exclamation-triangle" : "dot-circle-o"}
                         size={16}
                         color={
                         impact === "high"
@@ -266,7 +284,7 @@ export default function ProductScreen({ route }) {
                 ]}
                 >
                 <FontAwesome
-                    name={impact !== "none" ? "exclamation-triangle" : "caret-right"}
+                    name={impact !== "none" ? "exclamation-triangle" : "dot-circle-o"}
                     size={16}
                     color={
                     impact === "high"

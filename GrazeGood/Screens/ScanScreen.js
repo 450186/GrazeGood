@@ -143,16 +143,32 @@ async function saveProduct() {
 }
 function GetEcoIndicator(score) {
   if(score <=30) {
-    return "🔴"
+    return (
+      <Text>
+        <FontAwesome name='dot-circle-o' size={24} color='red'/>
+      </Text>
+    )
   }
   if(score <=70 && score > 30) {
-    return "🟡"
+    return (
+      <Text>
+        <FontAwesome name='dot-circle-o' size={24} color='yellow'/>
+      </Text>
+    )
   }
   if(score > 70) {
-    return "🟢"
+    return (
+      <Text>
+        <FontAwesome name='dot-circle-o' size={24} color='green'/>
+      </Text>
+    )
   }
   if(score == null) {
-    return "⚪️"
+    return (
+      <Text>
+        <FontAwesome name='dot-circle-o' size={24} color='white'/>
+      </Text>
+    )
   }
 }
 async function rewardScans() {
@@ -292,7 +308,11 @@ async function fetchProduct(productCode) {
               >
                 <FontAwesome5 name="ad" size={30} color="white" />
               </TouchableOpacity>
-              <Text style={styles.ScanCounter}>Scans Left: {scansLeft ?? "..."}</Text>
+              {!isPremium ? (
+                <Text style={styles.ScanCounter}>Scans Left: {scansLeft ?? "..."}</Text>
+              ) : (
+                <Text style={styles.ScanCounter}>Unlimited Scans</Text>
+              )}
             </View>
         )}
         <>
@@ -371,7 +391,11 @@ async function fetchProduct(productCode) {
             )}
           </View>
           <View style={styles.openScannerContainer}>
+            {!isPremium ? (
               <Text style={styles.scanCountClosed}>Scans Left: {scansLeft ?? "..."}</Text>
+            ): (
+              <Text style={styles.scanCountClosed}>Unlimited Scans</Text>
+            )}
 
             <TouchableOpacity
               style={styles.openScannerButton}

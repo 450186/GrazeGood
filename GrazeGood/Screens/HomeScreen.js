@@ -137,6 +137,10 @@ useEffect(() => {
             justifyContent: productOfTheWeek.length <= 2 ? "center" : "flex-start",
           }}
           renderItem={({ item }) => (
+            <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate("Product", { barcode: item.barcode })}
+            >
             <View style={styles.ProductContainer}>
               <View style={styles.Product}>
                 {item.imageUrl ? (
@@ -162,6 +166,7 @@ useEffect(() => {
                 <Text style={styles.EcoScore}>Eco Grade: {item.ecoScoreGrade}</Text>
               </View>
             </View>
+            </TouchableOpacity>
           )}
         />
     </View>
