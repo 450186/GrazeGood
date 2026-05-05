@@ -622,11 +622,12 @@ app.get("/debug/find-potw-candidates", async (_req, res) => {
   try {
     const searchUrl =
       "https://world.openfoodfacts.org/cgi/search.pl" +
-      "?search_terms=bio" +
+      "?search_terms=natural" +
       "&search_simple=1" +
       "&action=process" +
       "&json=1" +
       "&page_size=30" +
+      "&tagtype_0=countries&tag_contains_0=contains&tag_0=united-kingdom" +
       "&fields=code,product_name,brands,image_front_small_url,nutriments,ingredients_text,ingredients,packaging_tags,countries_tags,manufacturing_places,categories_tags,additives_tags,nova_group";
 
     const offRes = await fetch(searchUrl, {
