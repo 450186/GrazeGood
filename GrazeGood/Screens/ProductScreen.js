@@ -88,6 +88,8 @@ export default function ProductScreen({ route }) {
       try {
         const res = await fetch(`${API_BASE}/product/${barcode}`);
         const data = await res.json();
+        console.log("PRODUCT ECO:", data.eco);
+        console.log("PRODUCT RAW:", data);
         if (res.ok) {
             setProduct(data);
             setEcoReason(data.eco?.ecoReason ?? null);
@@ -99,7 +101,6 @@ export default function ProductScreen({ route }) {
       } catch (e) {
         console.log("Error loading product", e);
         setProduct(null);
-
       }
     }
     loadProduct();

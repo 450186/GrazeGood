@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { useState, useCallback, useEffect } from "react";
 import React from "react";
-import { View, Text, Button, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, Button, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 
 export default function HomeScreen( { setUser, navigation } ) {
   const [products, setProducts] = useState([]);
@@ -11,6 +11,7 @@ export default function HomeScreen( { setUser, navigation } ) {
   const [loadingPOTW, setLoadingPOTW] = useState(true);
 
   async function loadProductOfTheWeek() {
+    setLoadingPOTW(true);
     try {
       const res = await fetch(`${API_BASE}/products-of-the-week`);
       const data = await res.json();
@@ -123,7 +124,12 @@ useEffect(() => {
       <Text style={{color: "#215C3D",marginTop: 20, fontSize: 20, fontWeight: "bold", textAlign: "center", marginBottom: 10}}>GrazeGood Picks of the Week</Text>
 
     <View style={styles.weeklyContainer}>
-      {productOfTheWeek.length === 0 ? (
+      {loadingPOTW ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#A0AF84" />
+          <Text style={styles.loadingText}>Loading picks of the week...</Text>
+        </View>
+      ) : productOfTheWeek.length === 0 ? (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <View style={styles.NoProducts}>
           <Text style={styles.falseText}>No picks of the week</Text>
@@ -290,5 +296,17 @@ const styles = StyleSheet.create({
     color: "red",
     textAlign: "center",
     justifyContent: "center",
+  },
+  loadingContainer: {
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    color: "#A0AF84",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginTop: 10,
+    textAlign: "center",
   },
 });

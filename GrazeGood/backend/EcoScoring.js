@@ -85,7 +85,7 @@ function calculateEcoScore(product) {
         reusable: 20,
         refill: 19
     };
-    if (product.packaging_tags) {
+    if (product.packaging_tags?.length > 0) {
         Object.entries(packagingScores).forEach(([material, value]) => {
             const matchedTag = product.packaging_tags?.find(tag => tag.includes(material));
             const cleanTag = matchedTag
@@ -301,10 +301,28 @@ function calculateEcoScore(product) {
     let finalScore = weightTotal > 0
         ? Math.round((score / weightTotal) * 100)
         : null;
-
-    if(finalScore != null) {
-        finalScore = Math.max(0, Math.min(100, finalScore));
+    
+    if (weightTotal === 0) {
+        return {
+            ecoScore: 50,
+            missingVariables: missing,
+            ecoReason: [
+            {
+                impact: "low",
+                message: "Not enough data — estimated score"
+            }
+            ]
+        };
     }
+    if (missing.length > 0) {
+        redFlags.push({
+            impact: "low",
+            message: "Score based on limited available data"
+        });
+    }
+
+    finalScore = Math.max(0, Math.min(100, finalScore));
+
     if (redFlag) {
         finalScore = 0;
     }
