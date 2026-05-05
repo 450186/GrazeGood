@@ -603,6 +603,7 @@ app.get("/products-of-the-week", async (_req, res) => {
     const week = setWeekNum();
 
     const weeklyPicks = [...goodProducts]
+      .filter(p => p?.barcode)  
       .sort((a, b) => {
         const A = (Number(String(a.barcode).slice(-6)) + week) % 100;
         const B = (Number(String(b.barcode).slice(-6)) + week) % 100;
@@ -621,7 +622,7 @@ app.get("/debug/find-potw-candidates", async (_req, res) => {
   try {
     const searchUrl =
       "https://world.openfoodfacts.org/cgi/search.pl" +
-      "?search_terms=plant based" +
+      "?search_terms=bio" +
       "&search_simple=1" +
       "&action=process" +
       "&json=1" +

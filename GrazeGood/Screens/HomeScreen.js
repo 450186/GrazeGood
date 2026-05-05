@@ -8,6 +8,21 @@ export default function HomeScreen( { setUser, navigation } ) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [productOfTheWeek, setProductOfTheWeek] = useState([]);
+  const [loadingPOTW, setLoadingPOTW] = useState(true);
+
+  async function loadProductOfTheWeek() {
+    try {
+      const res = await fetch(`${API_BASE}/products-of-the-week`);
+      const data = await res.json();
+
+      if (res.ok) setProductOfTheWeek(data);
+      else setProductOfTheWeek([]);
+    } catch (e) {
+      console.log("Error loading product of the week", e);
+    } finally {
+      setLoadingPOTW(false);
+    }
+  }
 
   const API_BASE = "https://grazegood.onrender.com";
 
@@ -17,26 +32,6 @@ export default function HomeScreen( { setUser, navigation } ) {
     }, [])
   );
 
-async function loadProductOfTheWeek() {
-  try {
-    const res = await fetch(`${API_BASE}/products-of-the-week`);
-    const text = await res.text();
-
-    console.log("POTW status:", res.status);
-    console.log("POTW raw response:", text);
-
-    const data = JSON.parse(text);
-
-    if (res.ok) {
-      setProductOfTheWeek(data);
-    } else {
-      console.log("Product of the week error:", data?.error);
-      setProductOfTheWeek([]);
-    }
-  } catch (e) {
-    console.log("Error loading product of the week", e);
-  }
-}
 useEffect(() => {
   loadProductOfTheWeek()
 }, [])
