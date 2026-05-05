@@ -65,6 +65,13 @@ const ProductSchema = new Schema(
       default: null,
       trim: true
     },
+    packaging_tags: [String],
+    countries_tags: [String],
+    manufacturing_places: {
+      type: String,
+      default: null,
+      trim: true
+    },
     ecoReason: [
       {
         impact: {type: String, default: null, trim: true},

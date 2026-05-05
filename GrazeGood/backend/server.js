@@ -130,6 +130,27 @@ app.get("/product/:barcode", async (req, res) => {
 
   const cachedProduct = await Product.findOne({ barcode });
   if (cachedProduct) {
+    const eco = calculateEcoScore({
+      product_name: cachedProduct.product_name,
+      brands: cachedProduct.brands,
+      nutriments: cachedProduct.nutriments,
+      ingredients: cachedProduct.ingredients,
+      ingredients_text: cachedProduct.ingredients_text,
+      additives_tags: cachedProduct.additives_tags,
+      nova_group: cachedProduct.nova_group,
+      packaging_tags: cachedProduct.packaging_tags,
+      countries_tags: cachedProduct.countries_tags,
+      manufacturing_places: cachedProduct.manufacturing_places,
+      packaging_tags: cachedProduct.packaging_tags,
+      countries_tags: cachedProduct.countries_tags,
+      manufacturing_places: cachedProduct.manufacturing_places,
+    });
+
+    cachedProduct.ecoScore = eco?.ecoScore ?? null;
+    cachedProduct.ecoScoreGrade = eco?.grade ?? null;
+    cachedProduct.ecoReason = eco?.ecoReason ?? null;
+    await cachedProduct.save();
+
     return res.json({
       barcode: cachedProduct.barcode,
       product_name: cachedProduct.product_name,
@@ -142,11 +163,10 @@ app.get("/product/:barcode", async (req, res) => {
       ingredients_language: cachedProduct.ingredients_language,
       additives_tags: cachedProduct.additives_tags,
       nova_group: cachedProduct.nova_group,
-      eco: {
-        ecoScore: cachedProduct.ecoScore,
-        grade: cachedProduct.ecoScoreGrade,
-        ecoReason: cachedProduct.ecoReason
-      }
+      eco,
+      packaging_tags: cachedProduct.packaging_tags,
+      countries_tags: cachedProduct.countries_tags,
+      manufacturing_places: cachedProduct.manufacturing_places,
     });
   }
 
@@ -251,6 +271,9 @@ app.get("/product/:barcode", async (req, res) => {
           ingredients_language: data.product.ingredients_lc ?? data.product.lang ?? null,
           additives_tags: data.product.additives_tags ?? [],
           nova_group: data.product.nova_group ?? data.product.nutriments?.["nova-group"] ?? null,
+          packaging_tags: data.product.packaging_tags ?? [],
+          countries_tags: data.product.countries_tags ?? [],
+          manufacturing_places: data.product.manufacturing_places ?? null
         },
         {
           new: true,
