@@ -316,11 +316,11 @@ function calculateEcoScore(product) {
             ]
         };
     }
-    if (missing.length > 0) {
-        redFlags.push({
-            impact: "low",
-            message: "Score based on limited available data"
-        });
+    if (weightTotal < 30 || missing.length > 0) {
+    redFlags.push({
+        impact: "low",
+        message: "Score based on limited available data"
+    });
     }
 
     finalScore = Math.max(0, Math.min(100, finalScore));

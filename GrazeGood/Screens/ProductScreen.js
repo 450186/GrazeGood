@@ -124,6 +124,7 @@ export default function ProductScreen({ route }) {
       ...(product.categories_tags ?? []),
     ].join(" ").toLowerCase();
 
+
     const isLiquid =
       nutriments["energy-kcal_100ml"] != null ||
       productText.includes("drink") ||
@@ -189,16 +190,18 @@ export default function ProductScreen({ route }) {
             product.eco?.ecoScore > 70 && styles.ecoScoreHigh
             ]}>{product.eco?.ecoScore ?? "-"}</Text>
         <Text style={styles.ecoScoreLabel}>EcoScore</Text> 
-        {/* <Text>{product.barcode}</Text> */}
-        {ecoReason?.map((flag, index) => (
+        {ecoReason?.map((flag, index) => {
+            const isDisclaimer = flag.message.includes("limited") || flag.message.includes("estimated");
             <Text key={index} style={[
                 styles.ecoReason,
-                flag.impact === "low" || flag.impact === "medium" && styles.ecoMedium,
-                flag.impact === "high" && styles.ecoHigh
+                flag.impact === "medium" && styles.ecoMedium,
+                flag.impact === "high" && styles.ecoHigh,
+                flag.impact === "low" && !isDisclaimer && styles.ecoLow,
+                isDisclaimer && styles.ecoDisclaimer
                 ]}>
                 {flag.message}
             </Text>
-        ))}
+        })}
       </View>
       <View style={styles.divider} />
       {hasNutriments && (
@@ -500,9 +503,17 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: "center",
     },
-    // ecoLow: {
-    //     color: "green"
-    // },
+    ecoDisclaimer: {
+      color: "#A0AF84",
+      opacity: 0.7,
+      fontSize: 14,
+      marginTop: 6,
+    },
+    ecoLow: {
+      color: "#A0AF84",
+      opacity: 0.75,
+      fontSize: 14,
+    },
     ecoMedium: {
         color: "yellow"
     },
