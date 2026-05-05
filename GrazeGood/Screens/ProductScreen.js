@@ -192,6 +192,7 @@ export default function ProductScreen({ route }) {
         <Text style={styles.ecoScoreLabel}>EcoScore</Text> 
         {ecoReason?.map((flag, index) => {
             const isDisclaimer = flag.message.includes("limited") || flag.message.includes("estimated");
+            return (
             <Text key={index} style={[
                 styles.ecoReason,
                 flag.impact === "medium" && styles.ecoMedium,
@@ -201,6 +202,7 @@ export default function ProductScreen({ route }) {
                 ]}>
                 {flag.message}
             </Text>
+            )
         })}
       </View>
       <View style={styles.divider} />
