@@ -20,7 +20,9 @@ function calculateEcoScore(product) {
 
         const joinedWords = {
             mixedplasticfilm: "Mixed Plastic Film",
+            "mixedplasticfilm packet": "Mixed Plastic Film Packet",
             plasticfilm: "Plastic Film",
+            "plasticfilm packet": "Plastic Film Packet",
             plasticbottle: "Plastic Bottle",
             plasticbag: "Plastic Bag",
             cardboardbox: "Cardboard Box",
@@ -107,9 +109,14 @@ function calculateEcoScore(product) {
     };
     if (product.packaging_tags?.length > 0) {
         Object.entries(packagingScores).forEach(([material, value]) => {
-            const matchedTag = product.packaging_tags?.find(tag => 
-                String(tag).toLowerCase().replace(/^en:/, "").includes(material)
-            );
+            const matchedTag = product.packaging_tags?.find(tag => {
+                const normalisedTag = String(tag)
+                    .toLowerCase()
+                    .replace(/^en:/, "")
+                    .replace(/[-\s]/g, "");
+
+                return normalisedTag.includes(material);
+            });
 
             if (matchedTag) {
                 const cleanTag = formatPackagingTag(matchedTag);
