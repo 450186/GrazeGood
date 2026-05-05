@@ -330,6 +330,7 @@ function calculateEcoScore(product) {
     if (weightTotal === 0) {
         return {
             ecoScore: redFlag ? 0 : 40,
+            confidence: 0,
             missingVariables: missing,
             ecoReason: redFlags.length > 0
             ? redFlags
@@ -356,6 +357,7 @@ function calculateEcoScore(product) {
 
     return {
         ecoScore: finalScore,
+        confidence: Math.round(weightTotal),
         missingVariables: missing,
         ecoReason: redFlags
     };

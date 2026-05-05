@@ -190,8 +190,20 @@ export default function ProductScreen({ route }) {
             product.eco?.ecoScore > 70 && styles.ecoScoreHigh
             ]}>{product.eco?.ecoScore ?? "-"}</Text>
         <Text style={styles.ecoScoreLabel}>EcoScore</Text> 
+        {product.eco?.confidence != null && (
+          <Text style={styles.ecoConfidence}>
+            {product.eco.confidence >= 70
+              ? "High confidence"
+              : product.eco.confidence >= 40
+              ? "Medium confidence"
+              : "Low confidence - limited data"
+            }
+          </Text>
+        )}
         {ecoReason?.map((flag, index) => {
-            const isDisclaimer = flag.message.includes("limited") || flag.message.includes("estimated");
+            const isDisclaimer = 
+            flag.message?.includes("limited") || 
+            flag.message?.includes("estimated");
             return (
             <Text key={index} style={[
                 styles.ecoReason,
@@ -504,6 +516,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
         textAlign: "center",
+    },
+    ecoConfidence: {
+      color: "#A0AF84",
+      fontSize: 13,
+      opacity: 0.8,
+      marginTop: 2,
+      marginBottom: 4,
     },
     ecoDisclaimer: {
       color: "#A0AF84",
