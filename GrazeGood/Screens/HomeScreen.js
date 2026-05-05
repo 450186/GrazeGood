@@ -71,6 +71,7 @@ useEffect(() => {
     }}
     >
       <Text style={styles.Title}>GrazeGood</Text>
+      
       <Text style={{color: "#215C3D", fontSize: 20, fontWeight: "bold", textAlign: "left", marginBottom: 10}}>Saved Products ({products.length})</Text>
     <View style={styles.RecentContainer}>
       {products.length === 0 ? (

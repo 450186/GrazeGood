@@ -37,6 +37,97 @@ mongoose.connect(process.env.MONGODB_URI)
       return response;
     }
 
+async function getProduct(barcode) {
+  let product = await Product.findOne({ barcode });
+
+  if(!product) {
+    const fields = [
+      "product_name",
+      "brands",
+      "image_front_small_url",
+      "nutriments",
+      "nutrition_grades",
+      "ingredients_text",
+      "ingredients",
+      "additives_tags",
+      "nova_group",
+      "ingredients_lc",
+      "lang",
+      "ingredients_text_en",
+      "ingredients_text_fr",
+      "ingredients_text_with_allergens",
+      "ingredients_text_with_allergens_en",
+      "ingredients_text_with_allergens_fr",
+      "packaging_tags",
+      "countries_tags",
+      "manufacturing_places",
+      "categories_tags"
+    ].join(",");
+
+    const url = 
+      `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(barcode)}` +
+      `?fields=${fields}&lang=en&lc=en`;
+
+    const res = await fetchWithRetry(url);
+
+    if(!res.ok) return null;
+
+    const data = await res.json();
+
+    if(data?.status !== 1 || !data?.product) return null;
+
+    const p = data.product;
+
+    const ingredientsText = 
+      p.ingredients_text_en ??
+      p.ingredients_text ??
+      p.ingredients_text_fr ??
+      p.ingredients_text_with_allergens ??
+      p.ingredients_text_with_allergens_en ??
+      p.ingredients_text_with_allergens_fr ??
+      null;
+
+      product = await Product.create({
+        barcode,
+        product_name: p.product_name ?? null,
+        brands: p.brands ?? null,
+        imageUrl: p.image_front_small_url ?? null,
+        nutriments: p.nutriments ?? null,
+        nutrition_grades: p.nutrition_grades ?? null,
+        ingredients: p.ingredients ?? [],
+        ingredients_text: ingredientsText,
+        ingredients_language: p.ingredients_lc ?? p.lang ?? null,
+        additives_tags: p.additives_tags ?? [],
+        nova_group: p.nova_group ?? p.nutriments?.["nova-group"] ?? null,
+        packaging_tags: p.packaging_tags ?? [],
+        countries_tags: p.countries_tags ?? [],
+        manufacturing_places: p.manufacturing_places ?? null,
+        categories_tags: p.categories_tags ?? [],
+      })
+    }
+      const eco = calculateEcoScore(product.toObject());
+
+      product.ecoScore = eco?.ecoScore ?? null
+      product.ecoReason = eco?.ecoReason ?? null
+      await product.save()
+
+      return {
+        barcode: product.barcode,
+        product_name: product.product_name,
+        brands: product.brands,
+        image_front_small_url: product.imageUrl,
+        nutriments: product.nutriments,
+        ingredients: product.ingredients,
+        ingredients_text: product.ingredients_text,
+        additives_tags: product.additives_tags,
+        nova_group: product.nova_group,
+        packaging_tags: product.packaging_tags,
+        countries_tags: product.countries_tags,
+        manufacturing_places: product.manufacturing_places,
+        categories_tags: product.categories_tags,
+        eco
+    }
+}
 function ensureScanDefaults(user) {
   if (user.scanCredits == null) user.scanCredits = 5;
   if (!user.lastScanReset) user.lastScanReset = new Date();
@@ -126,177 +217,16 @@ app.get("/health", (_req, res) => {
 });
 
 app.get("/product/:barcode", async (req, res) => {
-  const { barcode } = req.params;
-
-  const cachedProduct = await Product.findOne({ barcode });
-  if (cachedProduct) {
-    const eco = calculateEcoScore({
-      product_name: cachedProduct.product_name,
-      brands: cachedProduct.brands,
-      nutriments: cachedProduct.nutriments,
-      ingredients: cachedProduct.ingredients,
-      ingredients_text: cachedProduct.ingredients_text,
-      additives_tags: cachedProduct.additives_tags,
-      nova_group: cachedProduct.nova_group,
-      packaging_tags: cachedProduct.packaging_tags,
-      countries_tags: cachedProduct.countries_tags,
-      manufacturing_places: cachedProduct.manufacturing_places,
-      categories_tags: cachedProduct.categories_tags
-    });
-
-    cachedProduct.ecoScore = eco?.ecoScore ?? null;
-    cachedProduct.ecoScoreGrade = eco?.grade ?? null;
-    cachedProduct.ecoReason = eco?.ecoReason ?? null;
-    await cachedProduct.save();
-
-    return res.json({
-      barcode: cachedProduct.barcode,
-      product_name: cachedProduct.product_name,
-      brands: cachedProduct.brands,
-      image_front_small_url: cachedProduct.imageUrl,
-      nutriments: cachedProduct.nutriments,
-      nutrition_grades: cachedProduct.nutrition_grades,
-      ingredients: cachedProduct.ingredients,
-      ingredients_text: cachedProduct.ingredients_text,
-      ingredients_language: cachedProduct.ingredients_language,
-      additives_tags: cachedProduct.additives_tags,
-      nova_group: cachedProduct.nova_group,
-      eco,
-      packaging_tags: cachedProduct.packaging_tags,
-      countries_tags: cachedProduct.countries_tags,
-      manufacturing_places: cachedProduct.manufacturing_places,
-      categories_tags: cachedProduct.categories_tags
-    });
-  }
-
-  const fields =
-    [
-      "product_name",
-      "brands",
-      "image_front_small_url",
-      
-      // nutrition
-      "nutriments",
-      "nutrition_grades",
-      
-      // ingredients / quality
-      "ingredients_text",
-      "ingredients",
-      "additives_tags",
-      "nova_group",
-      "ingredients_lc",
-      "lang",
-      "ingredients_text_en",
-      "ingredients_text_fr",
-      "ingredients_text_with_allergens",
-      "ingredients_text_with_allergens_en",
-      "ingredients_text_with_allergens_fr",
-      
-      // environment
-      "packaging_tags",
-      "countries_tags",
-      "manufacturing_places",
-      
-      // optional extras
-      "categories_tags"
-    ].join(",");
-
-  const url =
-    `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(barcode)}` +
-    `?fields=${fields}&lang=en&lc=en`;
-
   try {
-    const r = await fetchWithRetry(url, {
-      headers: {
-        Accept: "application/json",
-        "User-Agent": "GrazeGood/1.0 (student project)"
-      }
-    });
+    const { barcode } = req.params;
 
-    const contentType = r.headers.get("content-type") || "";
-    const bodyText = await r.text();
+    const product = await getProduct(barcode);
 
-    console.log("OFF status:", r.status);
-    console.log("OFF content-type:", contentType);
-    console.log("OFF body preview:", bodyText.slice(0, 300));
-
-    if (r.status === 504) {
-      return res.status(504).json({
-        error: "Open Food Facts is temporarily unavailable. Please try again."
-      });
-    }
-    if (r.status === 429) {
-      return res.status(429).json({
-        error: "Open Food Facts is rate-limited. Please try again later."
-      });
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
     }
 
-    if (!contentType.includes("application/json")) {
-      return res.status(502).json({
-        error: "Unexpected response from Open Food Facts"
-      });
-    }
-
-    const data = JSON.parse(bodyText);
-
-    if (data?.status === 1 && data?.product) {
-      const ingredientsText =
-        data.product.ingredients_text_en ??
-        data.product.ingredients_text ??
-        data.product.ingredients_text_fr ??
-        data.product.ingredients_text_with_allergens ??
-        data.product.ingredients_text_with_allergens_en ??
-        data.product.ingredients_text_with_allergens_fr ??
-        null;
-      const eco = calculateEcoScore({
-        ...data.product, 
-        ingredients_text: ingredientsText
-      });
-
-      await Product.findOneAndUpdate(
-        { barcode },
-        {
-          barcode,
-          product_name: data.product.product_name ?? null,
-          brands: data.product.brands ?? null,
-          imageUrl: data.product.image_front_small_url ?? null,
-          ecoScore: eco?.ecoScore ?? null,
-          ecoScoreGrade: eco?.grade ?? null,
-          ecoReason: eco?.ecoReason ?? null,
-          nutriments: data.product.nutriments ?? null,
-          nutrition_grades: data.product.nutrition_grades ?? null,
-          ingredients: data.product.ingredients ?? [],
-          ingredients_text: ingredientsText ?? null,
-          ingredients_language: data.product.ingredients_lc ?? data.product.lang ?? null,
-          additives_tags: data.product.additives_tags ?? [],
-          nova_group: data.product.nova_group ?? data.product.nutriments?.["nova-group"] ?? null,
-          packaging_tags: data.product.packaging_tags ?? [],
-          countries_tags: data.product.countries_tags ?? [],
-          manufacturing_places: data.product.manufacturing_places ?? null,
-          categories_tags: data.product.categories_tags ?? [],
-        },
-        {
-          new: true,
-          upsert: true,
-          setDefaultsOnInsert: true,
-        }
-      );
-
-      return res.json({
-        ...data.product,
-        ingredients_text: ingredientsText,
-        ingredients_language: data.product.ingredients_lc ?? data.product.lang ?? null,
-        additives_tags: data.product.additives_tags ?? [],
-        nova_group: data.product.nova_group ?? data.product.nutriments?.["nova-group"] ?? null,
-        packaging_tags: data.product.packaging_tags ?? [],
-        countries_tags: data.product.countries_tags ?? [],
-        manufacturing_places: data.product.manufacturing_places ?? null,
-        categories_tags: data.product.categories_tags ?? [],
-        eco,
-      });
-    }
-
-    return res.status(404).json({ error: "Product not found" });
+    return res.json(product);
   } catch (e) {
     console.error("PRODUCT ROUTE ERROR:", e);
     return res.status(500).json({ error: "Server error" });
@@ -656,31 +586,29 @@ app.post('/user/:username/togglePremiumRenewal', async (req, res) => {
 })
 app.get("/products-of-the-week", async (_req, res) => {
   try {
+    const products = await Promise.all(
+      POTWs.map((barcode) => getProduct(barcode))
+    );
 
-    const scoredProducts = POTWs.map((product) => {
-      const eco = calculateEcoScore(product);
-      return {
-        ...product,
-        ecoScore: eco.ecoScore,
-        ecoScoreGrade: getEcoGrade(eco.ecoScore),
-        ecoReason: eco.ecoReason
-      }
-    })
+    const goodProducts = products
+      .filter(Boolean)
+      .filter((product) =>
+        product.eco?.ecoScore != null &&
+        product.eco.ecoScore >= 70 &&
+        !product.eco.ecoReason?.some((reason) => reason.impact === "high")
+      );
 
-    const goodProducts = scoredProducts 
-    .filter((p) => p.ecoScore !== null && p.ecoScore > 60)
+    const week = setWeekNum();
 
-    const week = setWeekNum()
+    const weeklyPicks = [...goodProducts]
+      .sort((a, b) => {
+        const A = (Number(a.barcode.slice(-6)) + week) % 100;
+        const B = (Number(b.barcode.slice(-6)) + week) % 100;
+        return A - B;
+      })
+      .slice(0, 5);
 
-    const shuffle = [...goodProducts].sort((a, b) => {
-      const A = (a.id * 31 + week) % 100;
-      const B = (b.id * 31 + week) % 100;
-      return A - B
-    })
-
-    const weeklyPicks = shuffle.slice(0, 5)
-
-    res.json(weeklyPicks);
+    return res.json(weeklyPicks);
   } catch (e) {
     console.error("Error getting products of the week: ", e);
     return res.status(500).json({ error: "Server error" });

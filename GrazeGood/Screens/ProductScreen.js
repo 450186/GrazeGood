@@ -116,13 +116,37 @@ export default function ProductScreen({ route }) {
     product.ingredients_text?.trim()?.length > 0;
 
     const nutriments = product.nutriments ?? {};
+    const productText = [
+      product.product_name,
+      product.brands,
+      product.categories,
+      ...(product.categories_tags ?? []),
+    ].join(" ").toLowerCase();
 
-  const isLiquid =
-    nutriments["energy-kcal_100ml"] != null ||
-    product.categories_tags?.some(tag =>
-      tag.includes("beverages") || tag.includes("drinks")
-  );
-    const suffix = isLiquid ? "_100ml" : "_100g";
+    const isLiquid =
+      nutriments["energy-kcal_100ml"] != null ||
+      productText.includes("drink") ||
+      productText.includes("beverage") ||
+      productText.includes("juice") ||
+      productText.includes("smoothie") ||
+      productText.includes("tea") ||
+      productText.includes("coffee") ||
+      productText.includes("water") ||
+      productText.includes("soda") ||
+      productText.includes("cola") ||
+      productText.includes("monster");
+    const has100mlData = [
+      "energy-kcal_100ml",
+      "fat_100ml",
+      "saturated-fat_100ml",
+      "sugars_100ml",
+      "salt_100ml",
+      "carbohydrates_100ml",
+      "proteins_100ml",
+      "fiber_100ml",
+    ].some((key) => nutriments[key] != null);
+
+    const suffix = has100mlData ? "_100ml" : "_100g";
     const nutrimentUnit = isLiquid ? "100ml" : "100g";
 
     const showNutrimentKeys = [
