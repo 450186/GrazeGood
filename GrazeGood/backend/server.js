@@ -141,9 +141,7 @@ app.get("/product/:barcode", async (req, res) => {
       packaging_tags: cachedProduct.packaging_tags,
       countries_tags: cachedProduct.countries_tags,
       manufacturing_places: cachedProduct.manufacturing_places,
-      packaging_tags: cachedProduct.packaging_tags,
-      countries_tags: cachedProduct.countries_tags,
-      manufacturing_places: cachedProduct.manufacturing_places,
+      categories_tags: cachedProduct.categories_tags
     });
 
     cachedProduct.ecoScore = eco?.ecoScore ?? null;
@@ -167,6 +165,7 @@ app.get("/product/:barcode", async (req, res) => {
       packaging_tags: cachedProduct.packaging_tags,
       countries_tags: cachedProduct.countries_tags,
       manufacturing_places: cachedProduct.manufacturing_places,
+      categories_tags: cachedProduct.categories_tags
     });
   }
 
@@ -273,7 +272,8 @@ app.get("/product/:barcode", async (req, res) => {
           nova_group: data.product.nova_group ?? data.product.nutriments?.["nova-group"] ?? null,
           packaging_tags: data.product.packaging_tags ?? [],
           countries_tags: data.product.countries_tags ?? [],
-          manufacturing_places: data.product.manufacturing_places ?? null
+          manufacturing_places: data.product.manufacturing_places ?? null,
+          categories_tags: data.product.categories_tags ?? [],
         },
         {
           new: true,
@@ -288,6 +288,10 @@ app.get("/product/:barcode", async (req, res) => {
         ingredients_language: data.product.ingredients_lc ?? data.product.lang ?? null,
         additives_tags: data.product.additives_tags ?? [],
         nova_group: data.product.nova_group ?? data.product.nutriments?.["nova-group"] ?? null,
+        packaging_tags: data.product.packaging_tags ?? [],
+        countries_tags: data.product.countries_tags ?? [],
+        manufacturing_places: data.product.manufacturing_places ?? null,
+        categories_tags: data.product.categories_tags ?? [],
         eco,
       });
     }
@@ -314,7 +318,11 @@ app.post("/save", async (req, res) => {
       ingredients_text,
       ingredients_language,
       additives_tags,
-      nova_group
+      nova_group,
+      categories_tags,
+      packaging_tags,
+      countries_tags,
+      manufacturing_places
     } = req.body;
     const user = await userData.findOne({username: savedBy});
 
@@ -343,7 +351,11 @@ app.post("/save", async (req, res) => {
         ingredients_text: ingredients_text ?? null,
         ingredients_language: ingredients_language ?? null,
         additives_tags: additives_tags ?? [],
-        nova_group: nova_group ?? nutriments?.["nova-group"] ?? null
+        nova_group: nova_group ?? nutriments?.["nova-group"] ?? null,
+        categories_tags: categories_tags ?? [],
+        packaging_tags: packaging_tags ?? [],
+        countries_tags: countries_tags ?? [],
+        manufacturing_places: manufacturing_places ?? null
       },
       {
         new: true,

@@ -117,18 +117,27 @@ export default function ProductScreen({ route }) {
 
     const nutriments = product.nutriments ?? {};
 
+  const isLiquid =
+    nutriments["energy-kcal_100ml"] != null ||
+    product.categories_tags?.some(tag =>
+      tag.includes("beverages") || tag.includes("drinks")
+  );
+    const suffix = isLiquid ? "_100ml" : "_100g";
+    const nutrimentUnit = isLiquid ? "100ml" : "100g";
+
     const showNutrimentKeys = [
-      "energy-kcal_100g",
-      "fat_100g",
-      "saturated-fat_100g",
-      "sugars_100g",
-      "salt_100g",
-      "carbohydrates_100g",
-      "proteins_100g",
-      "fiber_100g",
+      `energy-kcal${suffix}`,
+      `fat${suffix}`,
+      `saturated-fat${suffix}`,
+      `sugars${suffix}`,
+      `salt${suffix}`,
+      `carbohydrates${suffix}`,
+      `proteins${suffix}`,
+      `fiber${suffix}`,
     ]
 
     const hasNutriments = showNutrimentKeys.some(key => nutriments[key] != null);
+
   return (
     <ScrollView
       style={styles.Page}
@@ -145,7 +154,7 @@ export default function ProductScreen({ route }) {
           style={styles.Image}
         />
       )}
-      <Text style={styles.Title}>{product.product_name.replace(/&quot;|&#039;/g, "'") ?? "Unknown product"}</Text>
+      <Text style={styles.Title}>{(product.product_name ?? "Unknown product").replace(/&quot;|&#039;/g, "'")}</Text>
       <Text style={styles.Brand}>{product.brands ?? "Unknown brand"}</Text>
       <View style={styles.ecoContainer}>
         <Text style={[
@@ -169,62 +178,63 @@ export default function ProductScreen({ route }) {
       {hasNutriments && (
         <>
       <Text style={styles.SectionTitle}>Nutrition Information</Text>
-      <Text style={styles.SectionSubtitle}>per 100g</Text>
+      <Text style={styles.SectionSubtitle}>per {nutrimentUnit}</Text>
       <View style={styles.nutritionContainer}>
         <NutritionRow
           label="Calories"
-          value={nutriments["energy-kcal_100g"]}
+          value={nutriments[`energy-kcal${suffix}`]}
           unit="kcal"
         />
-        {nutriments["energy-kcal_100g"] != null && <View style={styles.rowDivider} />}
+        {nutriments[`energy-kcal${suffix}`] != null && <View style={styles.rowDivider} />}
         <NutritionRow
           label="Fat"
-          value={nutriments["fat_100g"]}
+          value={nutriments[`fat${suffix}`]}
           unit="g"
           levelType="fat"
         />
         <NutritionRow
           label="Saturated fat"
-          value={nutriments["saturated-fat_100g"]}
+          value={nutriments[`saturated-fat${suffix}`]}
           unit="g"
           sub
         />
-        {nutriments["fat_100g"] != null && <View style={styles.rowDivider} />}
+        {nutriments[`fat${suffix}`] != null && <View style={styles.rowDivider} />}
         <NutritionRow
           label="Carbohydrates"
-          value={nutriments["carbohydrates_100g"]}
+          value={nutriments[`carbohydrates${suffix}`]}
           unit="g"
         />
+        {nutriments[`carbohydrates${suffix}`] != null && <View style={styles.rowDivider} />}
         <NutritionRow
           label="Sugar"
-          value={nutriments["sugars_100g"]}
+          value={nutriments[`sugars${suffix}`]}
           unit="g"
           levelType="sugar"
           sub
         />
-        {nutriments["sugars_100g"] != null && <View style={styles.rowDivider} />}
+        {nutriments[`sugars${suffix}`] != null && <View style={styles.rowDivider} />}
         <NutritionRow
           label="Protein"
-          value={nutriments["proteins_100g"]}
+          value={nutriments[`proteins${suffix}`]}
           unit="g"
         />
-        {nutriments["proteins_100g"] != null && <View style={styles.rowDivider} />}
+        {nutriments[`proteins${suffix}`] != null && <View style={styles.rowDivider} />}
         <NutritionRow
           label="Salt"
-          value={nutriments["salt_100g"]}
+          value={nutriments[`salt${suffix}`]}
           unit="g"
           levelType="salt"
         />
-        {nutriments["salt_100g"] != null && <View style={styles.rowDivider} />}
+        {nutriments[`salt${suffix}`] != null && <View style={styles.rowDivider} />}
         <NutritionRow
           label="Fiber"
-          value={nutriments["fiber_100g"]}
+          value={nutriments[`fiber${suffix}`]}
           unit="g"
         />
       </View>
       </>
       )}
-      {nutriments["fiber_100g"] != null && <View style={styles.divider} />}
+      {hasNutriments && hasIngredients && <View style={styles.divider} />}
       {hasIngredients && (
         <>
         <Text style={styles.SectionTitle}>Ingredients</Text>

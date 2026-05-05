@@ -103,6 +103,10 @@ async function saveProduct() {
         ingredients_language: product.ingredients_language ?? product.ingredients_lc ?? product.lang ?? null,
         additives_tags: product.additives_tags ?? [],
         nova_group: product.nova_group ?? product.nutriments?.["nova-group"] ?? null,
+        packaging_tags: product.packaging_tags ?? [],
+        countries_tags: product.countries_tags ?? [],
+        manufacturing_places: product.manufacturing_places ?? null,
+        categories_tags: product.categories_tags ?? [],
         eco: {
           ecoScore,
           ecoReason,
@@ -451,9 +455,16 @@ async function fetchProduct(productCode) {
       {loading && <ActivityIndicator />}
       {error && <Text style={{color: 'red'}}>{error}</Text>}
       {product ? (
+        <>
+        <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() => {
+          navigation.navigate("Product", { barcode: lastBarcode });
+        }}
+        >
         <View style={styles.ProductInfo}>
           <Text style={styles.TitleText}>
-            Product Name: {product.product_name.replace(/&quot;|&#039;/g, "'") ?? "Unknown"}
+            Product Name: {(product.product_name ?? "Unknown").replace(/&quot;|&#039;/g, "'")}
           </Text>
 
           <Text style={styles.TitleText}>
@@ -553,13 +564,18 @@ async function fetchProduct(productCode) {
             />
           )}
           <TouchableOpacity
-            onPress={saveProduct}
+            onPress={(e) => {
+              e.stopPropagation();
+              saveProduct()
+            }}
             style={styles.Button}
             disabled={saving}
           >
             <Text style={styles.ButtonText}>Save Product</Text>
           </TouchableOpacity>
         </View>
+        </TouchableOpacity>
+        </>
       ) : null}
     </View>
   );

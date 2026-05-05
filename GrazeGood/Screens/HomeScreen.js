@@ -113,7 +113,7 @@ useEffect(() => {
                   numberOfLines={4}
                   ellipsizeMode="tail"
                   >
-                    {item.product_name}
+                    {item.product_name.replace(/&quot;|&#039;/g, "'")}
                   </Text>
                   <View style={{flex: 1}}/>
                   <Text style={styles.EcoScore}>Eco Score: {item.ecoScore}</Text>

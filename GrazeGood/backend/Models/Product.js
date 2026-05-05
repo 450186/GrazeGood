@@ -72,6 +72,10 @@ const ProductSchema = new Schema(
       default: null,
       trim: true
     },
+    categories_tags: {
+      type: [String],
+      default: []
+    },
     ecoReason: [
       {
         impact: {type: String, default: null, trim: true},
