@@ -619,6 +619,56 @@ app.get("/products-of-the-week", async (_req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 });
+app.get("/debug/find-potw-candidates", async (_req, res) => {
+  try {
+    const searchUrl =
+      "https://world.openfoodfacts.org/cgi/search.pl" +
+      "?search_terms=organic" +
+      "&search_simple=1" +
+      "&action=process" +
+      "&json=1" +
+      "&page_size=30" +
+      "&fields=code,product_name,brands,image_front_small_url,nutriments,ingredients_text,ingredients,packaging_tags,countries_tags,manufacturing_places,categories_tags,additives_tags,nova_group";
+
+    const offRes = await fetch(searchUrl, {
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "GrazeGood/1.0"
+      }
+    });
+
+    const data = await offRes.json();
+
+    const candidates = data.products
+      .map((p) => {
+        const eco = calculateEcoScore({
+          ...p,
+          ingredients_text: p.ingredients_text ?? null
+        });
+
+        return {
+          barcode: p.code,
+          product_name: p.product_name,
+          brands: p.brands,
+          image_front_small_url: p.image_front_small_url,
+          eco
+        };
+      })
+      .filter((p) =>
+        p.barcode &&
+        p.product_name &&
+        p.eco?.ecoScore != null &&
+        p.eco.ecoScore >= 70 &&
+        !p.eco.ecoReason?.some((r) => r.impact === "high")
+      )
+      .sort((a, b) => b.eco.ecoScore - a.eco.ecoScore);
+
+    res.json(candidates);
+  } catch (e) {
+    console.error("Candidate search error:", e);
+    res.status(500).json({ error: "Server error" });
+  }
+});
 app.post("/login", async (req, res) => {
   try {
     const {username, password} = req.body;

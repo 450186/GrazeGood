@@ -170,7 +170,7 @@ function calculateEcoScore(product) {
                 ? manufacturingScore / placesFound
                 : null;
         score += (averageManufacturingScore / 1.5);
-        weightTotal += 66;
+        weightTotal += 25;
     }
     else {
         missing.push("manufacturing_places");
