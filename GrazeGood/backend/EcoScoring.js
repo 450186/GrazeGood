@@ -3,6 +3,14 @@ function calculateEcoScore(product) {
 
     let score = 0;
     let weightTotal = 0;
+
+    function addWeightedSection(sectionScore, sectionWeight) {
+        if (sectionScore == null) return;
+
+        const clampedScore = Math.max(0, Math.min(100, sectionScore));
+        score += (clampedScore / 100) * sectionWeight;
+        weightTotal += sectionWeight;
+    }
     const missing = [];
     const redFlags = [];
     let redFlag = false;
@@ -101,19 +109,15 @@ function calculateEcoScore(product) {
         const averagePackagingScore = materialCount > 0
             ? packagingScore / materialCount
             : null;
-        score += averagePackagingScore;
-        weightTotal += 20;
+        if (averagePackagingScore != null) {
+            const packagingScoreOutOf100 = (averagePackagingScore / 20) * 100;
+            addWeightedSection(packagingScoreOutOf100, 20);
+        }
     } else {
         missing.push("packaging_tags");
     }
 
     //manufacturing countries
-    if (product.countries_tags) {
-        score += 15;
-        weightTotal += 15;
-    } else {
-        missing.push("countries_tags");
-    }
 
     let manufacturingScore = 0;
     let placesFound = 0;
@@ -169,8 +173,10 @@ function calculateEcoScore(product) {
             placesFound > 0
                 ? manufacturingScore / placesFound
                 : null;
-        score += (averageManufacturingScore / 1.5);
-        weightTotal += 25;
+
+        if(averageManufacturingScore != null) {
+            addWeightedSection(averageManufacturingScore, 25);
+        }
     }
     else {
         missing.push("manufacturing_places");
@@ -283,8 +289,9 @@ function calculateEcoScore(product) {
                 ? ingredientScore / ingredientsFound
                 : null;
 
-        score += (averageIngredientScore / 2);
-        weightTotal += 50;
+        if (averageIngredientScore != null) {
+            addWeightedSection(averageIngredientScore, 50);
+        }
 
     } else {
         missing.push("ingredients_text");
@@ -293,6 +300,10 @@ function calculateEcoScore(product) {
     let finalScore = weightTotal > 0
         ? Math.round((score / weightTotal) * 100)
         : null;
+
+    if(finalScore != null) {
+        finalScore = Math.max(0, Math.min(100, finalScore));
+    }
     if (redFlag) {
         finalScore = 0;
     }
