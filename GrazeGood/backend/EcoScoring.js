@@ -304,7 +304,7 @@ function calculateEcoScore(product) {
     
     if (weightTotal === 0) {
         return {
-            ecoScore: redFlag ? 0 : 50,
+            ecoScore: redFlag ? 0 : 40,
             missingVariables: missing,
             ecoReason: redFlags.length > 0
             ? redFlags
