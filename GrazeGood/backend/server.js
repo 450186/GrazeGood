@@ -623,7 +623,7 @@ app.get("/debug/find-potw-candidates", async (_req, res) => {
   try {
     const searchUrl =
       "https://world.openfoodfacts.org/cgi/search.pl" +
-      "?search_terms=pasta" +
+      "?search_terms=rice" +
       "&search_simple=1" +
       "&action=process" +
       "&json=1" +
