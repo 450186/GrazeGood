@@ -91,6 +91,7 @@ function calculateEcoScore(product) {
             const cleanTag = matchedTag
             ?.replace(/^en:/, "")
             .replace(/-/g, " ")
+            .replace(/([a-z])([A-Z])/g, "$1 $2")
             .replace(/\b\w/g, c => c.toUpperCase());
 
             if (matchedTag) {
