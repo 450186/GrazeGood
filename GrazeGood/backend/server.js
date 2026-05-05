@@ -587,7 +587,7 @@ app.post('/user/:username/togglePremiumRenewal', async (req, res) => {
 app.get("/products-of-the-week", async (_req, res) => {
   try {
     const products = await Promise.all(
-      POTWs.map((barcode) => getProduct(barcode))
+      POTWs.map((barcode) => getProduct(String(barcode)))
     );
 
     const goodProducts = products
@@ -604,15 +604,16 @@ app.get("/products-of-the-week", async (_req, res) => {
 
     const weeklyPicks = [...goodProducts]
       .sort((a, b) => {
-        const A = (Number(a.barcode.slice(-6)) + week) % 100;
-        const B = (Number(b.barcode.slice(-6)) + week) % 100;
+        const A = (Number(String(a.barcode).slice(-6)) + week) % 100;
+        const B = (Number(String(b.barcode).slice(-6)) + week) % 100;
         return A - B;
       })
       .slice(0, 5);
 
     return res.json(weeklyPicks);
   } catch (e) {
-    console.error("Error getting products of the week: ", e);
+    console.error("Error getting products of the week:", e.message);
+    console.error(e);
     return res.status(500).json({ error: "Server error" });
   }
 });
