@@ -304,13 +304,15 @@ function calculateEcoScore(product) {
     
     if (weightTotal === 0) {
         return {
-            ecoScore: 50,
+            ecoScore: redFlag ? 0 : 50,
             missingVariables: missing,
-            ecoReason: [
-            {
-                impact: "low",
-                message: "Not enough data — estimated score"
-            }
+            ecoReason: redFlags.length > 0
+            ? redFlags
+            : [
+                {
+                    impact: "low",
+                    message: "Not enough data — estimated score"
+                }
             ]
         };
     }
