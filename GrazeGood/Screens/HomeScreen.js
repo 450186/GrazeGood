@@ -117,7 +117,7 @@ useEffect(() => {
                     {item.product_name.replace(/&quot;|&#039;/g, "'")}
                   </Text>
                   <View style={{flex: 1}}/>
-                  <Text style={styles.EcoScore}>Eco Score: {item.eco?.ecoScore}</Text>
+                  <Text style={styles.EcoScore}>Eco Score: {item.eco?.ecoScore ?? item.ecoScore ?? "-"}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -144,10 +144,10 @@ useEffect(() => {
             >
             <View style={styles.ProductContainer}>
               <View style={styles.Product}>
-                {item.imageUrl ? (
+                {item.image_front_small_url ? (
                   <Image
                     style={styles.ProductImage}
-                    source={{ uri: item.imageUrl }}
+                    source={{ uri: item.image_front_small_url }}
                   />
                 ) : (
                   <Image
