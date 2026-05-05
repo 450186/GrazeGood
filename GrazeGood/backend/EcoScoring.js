@@ -108,6 +108,8 @@ function calculateEcoScore(product) {
         refill: 19
     };
     if (product.packaging_tags?.length > 0) {
+        console.log("PRODUCT:", product.product_name);
+        console.log("PACKAGING TAGS:", product.packaging_tags);
         Object.entries(packagingScores).forEach(([material, value]) => {
             const matchedTag = product.packaging_tags?.find(tag => {
                 const normalisedTag = String(tag)
@@ -117,6 +119,8 @@ function calculateEcoScore(product) {
 
                 return normalisedTag.includes(material);
             });
+
+            console.log("CHECKING:", material, "MATCH:", matchedTag);
 
             if (matchedTag) {
                 const cleanTag = formatPackagingTag(matchedTag);
