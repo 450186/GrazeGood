@@ -71,7 +71,7 @@ useEffect(() => {
     }}
     >
       <Text style={styles.Title}>GrazeGood</Text>
-      
+
       <Text style={{color: "#215C3D", fontSize: 20, fontWeight: "bold", textAlign: "left", marginBottom: 10}}>Saved Products ({products.length})</Text>
     <View style={styles.RecentContainer}>
       {products.length === 0 ? (
@@ -98,10 +98,10 @@ useEffect(() => {
             >
               <View style={styles.ProductContainer}>
                 <View style={styles.Product}>
-                  {item.imageUrl ? (
+                  {item.image_front_small_url ? (
                     <Image
                       style={styles.ProductImage}
-                      source={{ uri: item.imageUrl }}
+                      source={{ uri: item.image_front_small_url }}
                     />
                   ) : (
                     <Image
@@ -117,7 +117,7 @@ useEffect(() => {
                     {item.product_name.replace(/&quot;|&#039;/g, "'")}
                   </Text>
                   <View style={{flex: 1}}/>
-                  <Text style={styles.EcoScore}>Eco Score: {item.ecoScore}</Text>
+                  <Text style={styles.EcoScore}>Eco Score: {item.eco?.ecoScore}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -130,7 +130,7 @@ useEffect(() => {
     <View style={styles.weeklyContainer}>
         <FlatList
           data={productOfTheWeek}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.barcode}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
@@ -144,10 +144,10 @@ useEffect(() => {
             >
             <View style={styles.ProductContainer}>
               <View style={styles.Product}>
-                {item.imageUrl ? (
+                {item.image_front_small_url ? (
                   <Image
                     style={styles.ProductImage}
-                    source={{ uri: item.imageUrl }}
+                    source={{ uri: item.image_front_small_url }}
                   />
                 ) : (
                   <Image
@@ -160,11 +160,10 @@ useEffect(() => {
                 numberOfLines={4}
                 ellipsizeMode="tail"
                 >
-                  {item.product_name}
+                {(item.product_name ?? "Unknown").replace(/&quot;|&#039;/g, "'")}
                 </Text>
                 <View style={{flex: 1}}/>
-                <Text style={styles.EcoScore}>Eco Score: {item.ecoScore}</Text>
-                <Text style={styles.EcoScore}>Eco Grade: {item.ecoScoreGrade}</Text>
+                <Text style={styles.EcoScore}>Eco Score: {item.eco?.ecoScore}</Text>
               </View>
             </View>
             </TouchableOpacity>
