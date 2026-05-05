@@ -188,7 +188,7 @@ export default function ProductScreen({ route }) {
             product.eco?.ecoScore > 70 && styles.ecoScoreHigh
             ]}>{product.eco?.ecoScore ?? "-"}</Text>
         <Text style={styles.ecoScoreLabel}>EcoScore</Text> 
-        <Text>{product.code}</Text>
+        <Text>{product.barcode}</Text>
         {ecoReason?.map((flag, index) => (
             <Text key={index} style={[
                 styles.ecoReason,
