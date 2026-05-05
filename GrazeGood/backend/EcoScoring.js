@@ -130,7 +130,7 @@ function calculateEcoScore(product) {
                 if (value <= 4) {
                     redFlags.push({
                         message: `Unsustainable material used: ${cleanTag}`,
-                        impact: "low"
+                        impact: "medium"
                     });
                 }
             }
