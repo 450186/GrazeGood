@@ -590,13 +590,18 @@ app.get("/products-of-the-week", async (_req, res) => {
       POTWs.map((barcode) => getProduct(barcode))
     );
 
+    // const goodProducts = products
+    //   .filter(Boolean)
+    //   .filter((product) =>
+    //     product.eco?.ecoScore != null &&
+    //     product.eco.ecoScore >= 70 &&
+    //     !product.eco.ecoReason?.some((reason) => reason.impact === "high")
+    //   );
     const goodProducts = products
-      .filter(Boolean)
-      .filter((product) =>
-        product.eco?.ecoScore != null &&
-        product.eco.ecoScore >= 70 &&
-        !product.eco.ecoReason?.some((reason) => reason.impact === "high")
-      );
+  .filter(Boolean)
+  .filter((product) =>
+    product.eco?.ecoScore != null
+  );
 
     const week = setWeekNum();
 

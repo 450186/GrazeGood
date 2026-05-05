@@ -98,10 +98,10 @@ useEffect(() => {
             >
               <View style={styles.ProductContainer}>
                 <View style={styles.Product}>
-                  {item.image_front_small_url ? (
+                  {item.imageUrl ? (
                     <Image
                       style={styles.ProductImage}
-                      source={{ uri: item.image_front_small_url }}
+                      source={{ uri: item.imageUrl }}
                     />
                   ) : (
                     <Image
@@ -144,10 +144,10 @@ useEffect(() => {
             >
             <View style={styles.ProductContainer}>
               <View style={styles.Product}>
-                {item.image_front_small_url ? (
+                {item.imageUrl ? (
                   <Image
                     style={styles.ProductImage}
-                    source={{ uri: item.image_front_small_url }}
+                    source={{ uri: item.imageUrl }}
                   />
                 ) : (
                   <Image
