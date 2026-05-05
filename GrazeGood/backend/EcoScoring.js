@@ -80,6 +80,10 @@ function calculateEcoScore(product) {
     if (product.packaging_tags) {
         Object.entries(packagingScores).forEach(([material, value]) => {
             const matchedTag = product.packaging_tags?.find(tag => tag.includes(material));
+            const cleanTag = matchedTag
+            ?.replace(/^en:/, "")
+            .replace(/-/g, " ")
+            .replace(/\b\w/g, c => c.toUpperCase());
 
             if (matchedTag) {
                 packagingScore += value;
@@ -87,7 +91,7 @@ function calculateEcoScore(product) {
 
                 if (value <= 4) {
                     redFlags.push({
-                        message: `Unsustainable material used: ${matchedTag}`,
+                        message: `Unsustainable material used: ${cleanTag}`,
                         impact: "low"
                     });
                 }
