@@ -589,12 +589,18 @@ app.get("/products-of-the-week", async (_req, res) => {
     const products = await Promise.all(
       POTWs.map((barcode) => getProduct(barcode))
     );
+    console.log(products.map((p) => ({
+      name: p?.product_name,
+      barcode: p?.barcode,
+      score: p?.eco?.ecoScore,
+      reasons: p?.eco?.ecoReason
+    })));
 
     const goodProducts = products
       .filter(Boolean)
       .filter((product) =>
         product.eco?.ecoScore != null &&
-        product.eco.ecoScore >= 70 &&
+        product.eco.ecoScore >= 60 &&
         !product.eco.ecoReason?.some((reason) => reason.impact === "high")
       );
 
