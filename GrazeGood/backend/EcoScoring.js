@@ -15,6 +15,26 @@ function calculateEcoScore(product) {
     const redFlags = [];
     let redFlag = false;
 
+    function formatPackagingTag(tag) {
+        if (!tag) return "";
+
+        const joinedWords = {
+            mixedplasticfilm: "Mixed Plastic Film",
+            plasticfilm: "Plastic Film",
+            plasticbottle: "Plastic Bottle",
+            plasticbag: "Plastic Bag",
+            cardboardbox: "Cardboard Box",
+        };
+
+        const cleaned = tag
+            .replace(/^en:/, "")
+            .replace(/-/g, " ")
+            .trim()
+            .toLowerCase();
+
+        return joinedWords[cleaned] ??
+            cleaned.replace(/\b\w/g, c => c.toUpperCase());
+    }
 
     //boycott check
     const boycottList = [
@@ -88,11 +108,8 @@ function calculateEcoScore(product) {
     if (product.packaging_tags?.length > 0) {
         Object.entries(packagingScores).forEach(([material, value]) => {
             const matchedTag = product.packaging_tags?.find(tag => tag.includes(material));
-            const cleanTag = matchedTag
-            ?.replace(/^en:/, "")
-            .replace(/-/g, " ")
-            .replace(/([a-z])([A-Z])/g, "$1 $2")
-            .replace(/\b\w/g, c => c.toUpperCase());
+
+            const cleanTag = formatPackagingTag(matchedTag);
 
             if (matchedTag) {
                 packagingScore += value;
