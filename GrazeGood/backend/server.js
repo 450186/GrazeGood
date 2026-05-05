@@ -584,38 +584,55 @@ app.post('/user/:username/togglePremiumRenewal', async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 })
+// app.get("/products-of-the-week", async (_req, res) => {
+//   try {
+//     const products = await Promise.all(
+//       POTWs.map((barcode) => getProduct(barcode))
+//     );
+//     console.log(products.map((p) => ({
+//       name: p?.product_name,
+//       barcode: p?.barcode,
+//       score: p?.eco?.ecoScore,
+//       reasons: p?.eco?.ecoReason
+//     })));
+
+//     const goodProducts = products
+//       .filter(Boolean)
+//       .filter((product) =>
+//         product.eco?.ecoScore != null &&
+//         product.eco.ecoScore >= 60 &&
+//         !product.eco.ecoReason?.some((reason) => reason.impact === "high")
+//       );
+
+
+//     const week = setWeekNum();
+
+//     const weeklyPicks = [...goodProducts]
+//       .sort((a, b) => {
+//         const A = (Number(a.barcode.slice(-6)) + week) % 100;
+//         const B = (Number(b.barcode.slice(-6)) + week) % 100;
+//         return A - B;
+//       })
+//       .slice(0, 5);
+
+//     return res.json(weeklyPicks);
+//   } catch (e) {
+//     console.error("Error getting products of the week: ", e);
+//     return res.status(500).json({ error: "Server error" });
+//   }
+// });
 app.get("/products-of-the-week", async (_req, res) => {
   try {
     const products = await Promise.all(
       POTWs.map((barcode) => getProduct(barcode))
     );
-    console.log(products.map((p) => ({
+
+    return res.json(products.map((p) => ({
       name: p?.product_name,
       barcode: p?.barcode,
       score: p?.eco?.ecoScore,
       reasons: p?.eco?.ecoReason
     })));
-
-    const goodProducts = products
-      .filter(Boolean)
-      .filter((product) =>
-        product.eco?.ecoScore != null &&
-        product.eco.ecoScore >= 60 &&
-        !product.eco.ecoReason?.some((reason) => reason.impact === "high")
-      );
-
-
-    const week = setWeekNum();
-
-    const weeklyPicks = [...goodProducts]
-      .sort((a, b) => {
-        const A = (Number(a.barcode.slice(-6)) + week) % 100;
-        const B = (Number(b.barcode.slice(-6)) + week) % 100;
-        return A - B;
-      })
-      .slice(0, 5);
-
-    return res.json(weeklyPicks);
   } catch (e) {
     console.error("Error getting products of the week: ", e);
     return res.status(500).json({ error: "Server error" });

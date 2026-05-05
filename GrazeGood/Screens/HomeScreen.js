@@ -128,6 +128,13 @@ useEffect(() => {
       <Text style={{color: "#215C3D",marginTop: 20, fontSize: 20, fontWeight: "bold", textAlign: "center", marginBottom: 10}}>GrazeGood Picks of the Week</Text>
 
     <View style={styles.weeklyContainer}>
+      {productOfTheWeek.length === 0 ? (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <View style={styles.NoProducts}>
+          <Text style={styles.falseText}>No picks of the week</Text>
+        </View>
+        </View>
+      ) : (
         <FlatList
           data={productOfTheWeek}
           keyExtractor={(item) => item.barcode}
@@ -169,6 +176,7 @@ useEffect(() => {
             </TouchableOpacity>
           )}
         />
+      )}
     </View>
     </ScrollView>
   );
@@ -273,5 +281,19 @@ const styles = StyleSheet.create({
     height: 300,
     backgroundColor: "#215C3D",
     borderRadius: 10
-  }
+  },
+    emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#C3B59F",
+    margin: 0,
+  },
+    falseText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "red",
+    textAlign: "center",
+    justifyContent: "center",
+  },
 });
