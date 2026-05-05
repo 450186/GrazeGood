@@ -107,11 +107,12 @@ function calculateEcoScore(product) {
     };
     if (product.packaging_tags?.length > 0) {
         Object.entries(packagingScores).forEach(([material, value]) => {
-            const matchedTag = product.packaging_tags?.find(tag => tag.includes(material));
-
-            const cleanTag = formatPackagingTag(matchedTag);
+            const matchedTag = product.packaging_tags?.find(tag => 
+                tag.toLowerCase().replace(/^en:/, "").includes(material)
+            );
 
             if (matchedTag) {
+                const cleanTag = formatPackagingTag(matchedTag);
                 packagingScore += value;
                 materialCount++;
 
