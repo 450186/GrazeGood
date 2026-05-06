@@ -127,16 +127,7 @@ export default function ProductScreen({ route }) {
 
     const isLiquid =
       nutriments["energy-kcal_100ml"] != null ||
-      productText.includes("drink") ||
-      productText.includes("beverage") ||
-      productText.includes("juice") ||
-      productText.includes("smoothie") ||
-      productText.includes("tea") ||
-      productText.includes("coffee") ||
-      productText.includes("water") ||
-      productText.includes("soda") ||
-      productText.includes("cola") ||
-      productText.includes("monster");
+      /\b(drink|beverage|juice|smoothie|tea|coffee|water|soda|cola|monster)\b/i.test(productText);
     const has100mlData = [
       "energy-kcal_100ml",
       "fat_100ml",
@@ -149,7 +140,7 @@ export default function ProductScreen({ route }) {
     ].some((key) => nutriments[key] != null);
 
     const suffix = has100mlData ? "_100ml" : "_100g";
-    const nutrimentUnit = isLiquid ? "100ml" : "100g";
+    const nutrimentUnit = suffix === "_100ml" ? "100ml" : "100g";
 
     const showNutrimentKeys = [
       `energy-kcal${suffix}`,
@@ -163,6 +154,16 @@ export default function ProductScreen({ route }) {
     ]
 
     const hasNutriments = showNutrimentKeys.some(key => nutriments[key] != null);
+
+    let confidenceMessage = null;
+
+    if (product.eco?.confidence >= 70) {
+      confidenceMessage = "High confidence";
+    } else if (product.eco?.confidence >= 40) {
+      confidenceMessage = "Some environmental data unavailable";
+    } else if (product.eco?.confidence != null) {
+      confidenceMessage = "EcoScore estimated from limited data";
+    }
 
   return (
     <ScrollView
@@ -190,14 +191,9 @@ export default function ProductScreen({ route }) {
             product.eco?.ecoScore > 70 && styles.ecoScoreHigh
             ]}>{product.eco?.ecoScore ?? "-"}</Text>
         <Text style={styles.ecoScoreLabel}>EcoScore</Text> 
-        {product.eco?.confidence != null && (
+        {confidenceMessage && (
           <Text style={styles.ecoConfidence}>
-            {product.eco.confidence >= 70
-              ? "High confidence"
-              : product.eco.confidence >= 40
-              ? "Medium confidence"
-              : "Low confidence - limited data"
-            }
+            {confidenceMessage}
           </Text>
         )}
         {ecoReason?.map((flag, index) => {
