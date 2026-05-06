@@ -1,12 +1,12 @@
 import React, { useState, useCallback } from "react";
-import { View, Text, ActivityIndicator, Image, FlatList, StyleSheet } from "react-native";
+import { View, Text, ActivityIndicator, Image, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { Pressable } from "react-native";
 import { FontAwesome5, FontAwesome6 } from "@expo/vector-icons";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 
-export default function SavedScreen() {
+export default function SavedScreen({ navigation }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -94,6 +94,9 @@ export default function SavedScreen() {
         contentContainerStyle={{ flexGrow: 1 }}
         onRefresh={() => loadProducts(true)}
         renderItem={({ item }) => (
+          <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => navigation.navigate("Product", { barcode: item.barcode })}>
           <Swipeable renderRightActions={() => renderRightActions(item.barcode)}>
             <View style={styles.savedProductContainer}>
               <View style={styles.savedProduct}>
@@ -119,6 +122,7 @@ export default function SavedScreen() {
               </View>
             </View>
           </Swipeable>
+          </TouchableOpacity>
         )}
         ListEmptyComponent={() => (
           <View style={styles.emptyContainer}>

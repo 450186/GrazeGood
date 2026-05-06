@@ -243,7 +243,6 @@ export default function ProductScreen({ route }) {
           value={nutriments[`carbohydrates${suffix}`]}
           unit="g"
         />
-        {nutriments[`carbohydrates${suffix}`] != null && <View style={styles.rowDivider} />}
         <NutritionRow
           label="Sugar"
           value={nutriments[`sugars${suffix}`]}

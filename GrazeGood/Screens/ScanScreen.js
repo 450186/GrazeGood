@@ -126,8 +126,8 @@ async function saveProduct() {
       console.log("Saved:", data);
     } else {
       Toast.show({
-        type: "error",
-        text1: "Error",
+        type: "info",
+        text1: "Info",
         text2: data?.error ?? "Unknown error",
         visibilityTime: 2000,
       });

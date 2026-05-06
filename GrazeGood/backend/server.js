@@ -262,7 +262,7 @@ app.post("/save", async (req, res) => {
 
     const alreadySaved = user.savedBarcodes.includes(barcode);
     if(alreadySaved) {
-      return res.status(400).json({ message: "Product already saved" });
+      return res.status(400).json({ error: "Product already saved" });
     }
 
     const product = await Product.findOneAndUpdate(
