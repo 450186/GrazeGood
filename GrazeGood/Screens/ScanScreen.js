@@ -297,6 +297,7 @@ async function fetchProduct(productCode) {
   return (
     <View style={styles.MainContainer}>
       <StatusBar style="auto" />
+      <ScrollView>
       {cameraOpen ? (
         <>
         {!isPremium && (
@@ -577,6 +578,7 @@ async function fetchProduct(productCode) {
         </TouchableOpacity>
         </>
       ) : null}
+      </ScrollView>
     </View>
   );
 }
