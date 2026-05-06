@@ -297,7 +297,17 @@ async function fetchProduct(productCode) {
   return (
     <View style={styles.MainContainer}>
       <StatusBar style="auto" />
-      <ScrollView>
+      {/* <ScrollView
+        contentInsetAdjustmentBehavior="never"
+        automaticallyAdjustContentInsets={false}
+        style={{
+          flex: 1,
+          backgroundColor: "#C3B59F",
+        }}
+        contentContainerStyle={{
+          paddingBottom: 40,
+        }}
+      > */}
       {cameraOpen ? (
         <>
         {!isPremium && (
@@ -578,7 +588,7 @@ async function fetchProduct(productCode) {
         </TouchableOpacity>
         </>
       ) : null}
-      </ScrollView>
+      {/* </ScrollView> */}
     </View>
   );
 }
