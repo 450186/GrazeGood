@@ -15,6 +15,8 @@ const {createUser, userData} = require("./Models/User");
 
 const Product = require("./Models/Product");
 
+const avatarType = "notionists"
+
 const mongoose = require("mongoose");
 
 mongoose.connect(process.env.MONGODB_URI)
@@ -682,7 +684,7 @@ app.get("/user/:username/profile", async (req, res) => {
 
   res.json({
     username: user.username,
-    avatarUrl: `https://api.dicebear.com/9.x/notionists/png?seed=${encodeURIComponent(seed)}`
+    avatarUrl: `https://api.dicebear.com/9.x/${avatarType}/png?seed=${encodeURIComponent(seed)}&t=${Date.now()}`
   })
 })
 app.post("/user/:username/randomise-avatar", async (req, res) => {
@@ -701,7 +703,7 @@ app.post("/user/:username/randomise-avatar", async (req, res) => {
 
     return res.json({
       message: "Avatar updated",
-      avatarUrl: `https://api.dicebear.com/9.x/personas/png?seed=${encodeURIComponent(newSeed)}`
+      avatarUrl: `https://api.dicebear.com/9.x/${avatarType}/png?seed=${encodeURIComponent(newSeed)}&t=${Date.now()}`
     });
   } catch (e) {
     return res.status(500).json({ error: "Server error" });

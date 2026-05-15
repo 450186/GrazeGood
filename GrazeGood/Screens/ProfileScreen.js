@@ -32,6 +32,7 @@ export default function ProfileScreen({ setUser, navigation, setTabProfileImage 
 
       if (profileRes.ok) {
         setProfileImage(profileData.avatarUrl);
+        setTabProfileImage(profileData.avatarUrl);
       }
 
       const scanRes = await fetch(`${API_BASE}/user/${storedUsername}/scans`);
