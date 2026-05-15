@@ -18,6 +18,7 @@ const UserSchema = new Schema(
         autoRenew: {type: Boolean, default: true},
         adsWatchedToday: {type: Number, default: 0},
         lastAdReset: {type: Date, default: Date.now},
+        avatarSeed: {type: String, default: null},
     },
     {timestamps: true}
 );

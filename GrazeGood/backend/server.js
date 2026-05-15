@@ -669,6 +669,22 @@ app.get("/debug/find-potw-candidates", async (_req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+app.get("/user/:username/profile", async (req, res) => {
+  const user = await userData.findOne(
+    {username: req.params.username},
+    {username: 1, avatarSeed: 1}
+  );
+  if(!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  const seed = user.avatarSeed || user.username;
+
+  res.json({
+    username: user.username,
+    avatarUrl: `https://api.dicebear.com/9.x/personas/png?seed=${encodeURIComponent(seed)}`
+  })
+})
 app.post("/login", async (req, res) => {
   try {
     const {username, password} = req.body;

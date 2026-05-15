@@ -1,4 +1,6 @@
 import React from "react";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesome } from "@expo/vector-icons";
 import { TouchableOpacity, Text, Image, View } from "react-native";
@@ -12,6 +14,32 @@ import Styles from "../styles/styles.js";
 import Colours from "../styles/colours.js";
 
 const Tab = createBottomTabNavigator();
+
+const [profileImage, setProfileImage] = useState(null);
+
+const API_BASE = "https://grazegood.onrender.com";
+
+useEffect(() => {
+  loadProfile()
+}, [])
+
+async function loadProfile() {
+  try {
+    const username = await AsyncStorage.getItem("username");
+    if(!username) return;
+
+    const res = await fetch(`${API_BASE}/user/${username}/profile`);
+
+    const data = await res.json();
+
+    if(res.ok) {
+      setProfileImage(data.avatarUrl);
+    }
+
+  } catch(e) {
+    console.log("Error loading profile image", e);
+  }
+}
 
 export default function TabNavigator({ setUser }) {
   return (
@@ -76,7 +104,22 @@ export default function TabNavigator({ setUser }) {
       </Tab.Screen>
       <Tab.Screen name="Scan" component={ScanScreen} />
       <Tab.Screen name="Saved" component={SavedScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen
+      options={{
+        tabBarIcon: ( { focused } ) => (
+          <Image
+            source={{uri: profileImage}}
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: 15,
+              borderWidth: 2,
+              borderColor: focused ? Colours.accentTwo : Colours.accent
+            }}
+          />
+        )
+      }}
+      name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
