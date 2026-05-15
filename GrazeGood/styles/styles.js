@@ -485,5 +485,21 @@ export default StyleSheet.create({
         marginVertical: 10,
         width: "30%",
         alignSelf: "center"
+    },
+    ProfileImageContainer: {
+        width: 120,
+        height: 120,
+        margin: "auto"
+    },
+    randomiseButton: {
+        backgroundColor: Colours.accent,
+        position: "absolute",
+        bottom: 10,
+        right: 15,
+        width: 30,
+        height: 30,
+        borderRadius: 20,
+        justifyContent: "center",
+        alignItems: "center",
     }
 })

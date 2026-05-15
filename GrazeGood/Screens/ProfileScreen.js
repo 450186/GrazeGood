@@ -8,7 +8,7 @@ import Styles from "../styles/styles.js"
 import Colours from "../styles/colours.js"
 import { FontAwesome, FontAwesome5, FontAwesome6 } from "@expo/vector-icons";
 
-export default function ProfileScreen({ setUser, navigation }) {
+export default function ProfileScreen({ setUser, navigation, setTabProfileImage }) {
   const [username, setUsername] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
   const [isPremium, setIsPremium] = useState(false);
@@ -58,13 +58,14 @@ export default function ProfileScreen({ setUser, navigation }) {
       const data = await res.json();
       if(res.ok) {
         setProfileImage(data.avatarUrl);
+        setTabProfileImage(data.avatarUrl);
       } else {
         console.log("Error randomising avatar: ", data?.error);
       }
   } catch (e) {
       console.log("Error randomising avatar: ", e);
   }
-
+}
   async function toggleRenewal(value) {
     try {
         if(!username) return;
@@ -92,30 +93,33 @@ export default function ProfileScreen({ setUser, navigation }) {
             console.log("Toggle renewal Error: ", e);
         }
     }
-  }
 
   return (
     <View style={Styles.StaticPage}>
       <Text style={Styles.Title}>Profile</Text>
 
       {profileImage && (
-        <Image
-          source={{ uri: profileImage }}
-          style={{
-            width: 110,
-            height: 110,
-            borderRadius: 55,
-            alignSelf: "center",
-          }}
-        />
+        <View style={Styles.ProfileImageContainer}>
+            <Image
+            source={{ uri: profileImage }}
+            style={{
+                width: 110,
+                height: 110,
+                borderRadius: 55,
+                alignSelf: "center",
+                position: "relative"
+            }}
+            />
+            <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={randomiseAvatar}
+            style={Styles.randomiseButton}
+            >
+                <FontAwesome6 name="shuffle" size={20} color={Colours.text}/>
+            </TouchableOpacity>
+        </View>
       )}
-      <TouchableOpacity
-      activeOpacity={0.8}
-      onPress={randomiseAvatar}
-      style={{alignSelf: "center", margin: 10}}
-      >
-        <FontAwesome6 name="shuffle" size={24} color={Colours.accent}/>
-      </TouchableOpacity>
+
       <Text style={Styles.ProductHead}>{username}</Text>
 
       <Text style={Styles.Premiumtext}>

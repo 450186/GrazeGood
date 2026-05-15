@@ -682,7 +682,7 @@ app.get("/user/:username/profile", async (req, res) => {
 
   res.json({
     username: user.username,
-    avatarUrl: `https://api.dicebear.com/9.x/personas/png?seed=${encodeURIComponent(seed)}`
+    avatarUrl: `https://api.dicebear.com/9.x/notionists/png?seed=${encodeURIComponent(seed)}`
   })
 })
 app.post("/user/:username/randomise-avatar", async (req, res) => {

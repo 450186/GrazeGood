@@ -80,7 +80,6 @@ export default function TabNavigator({ setUser }) {
 
       <Tab.Screen
         name="Profile"
-        component={ProfileScreen}
         options={{
           tabBarIcon: ({ focused }) =>
             profileImage ? (
@@ -102,7 +101,15 @@ export default function TabNavigator({ setUser }) {
               />
             ),
         }}
-      />
+      >
+        {(props) => (
+          <ProfileScreen
+            {...props}
+            setUser={setUser}
+            setTabProfileImage={setProfileImage}
+          />
+        )}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 }
