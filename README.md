@@ -1,6 +1,9 @@
+
 ```
 GrazeGood
+├─ .DS_Store
 ├─ GrazeGood
+│  ├─ .DS_Store
 │  ├─ .expo
 │  │  ├─ README.md
 │  │  ├─ devices.json
@@ -24,6 +27,7 @@ GrazeGood
 │  │  ├─ product-placeholder.jpg
 │  │  └─ splash-icon.png
 │  ├─ backend
+│  │  ├─ .DS_Store
 │  │  ├─ EcoScoring.js
 │  │  ├─ Models
 │  │  │  ├─ Product.js

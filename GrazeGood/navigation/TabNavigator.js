@@ -8,28 +8,32 @@ import ScanScreen from "../Screens/ScanScreen";
 import SavedScreen from "../Screens/SavedScreen";
 import PremiumScreen from "../Screens/PremiumScreen";
 
+import Styles from "../styles/styles.js";
+import Colours from "../styles/colours.js";
+
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator({ setUser }) {
   return (
     <Tab.Navigator
       screenOptions={({route, navigation}) => ({
-        tabBarActiveTintColor: "#108A2C",
-        tabBarInactiveTintColor: "#A0AF84",
+        tabBarActiveTintColor: Colours.accentTwo,
+        tabBarInactiveTintColor: Colours.accent,
         tabBarStyle: {
           height: 80,
           paddingTop: 10,
           paddingBottom: 10,
-          backgroundColor: "#215C3D"
+          backgroundColor: Colours.background
         },
         headerStyle: {
-          backgroundColor: "#215C3D",
+          backgroundColor: Colours.background,
           height: 120,
         },
         headerTitleStyle: {
-          color: "#A0AF84",
+          color: Colours.text,
           fontSize: 30,
         },
+        headerTitle: "GrazeGood",
         tabBarItemStyle: {
           justifyContent: "center",
           alignItems: "center"
@@ -45,7 +49,7 @@ export default function TabNavigator({ setUser }) {
           onPress={() => navigation.navigate("Profile")}
           style={{marginRight: 15}}
           >
-            <FontAwesome name="user" size={24} color="#A0AF84" />
+            <FontAwesome name="user" size={24} color={Colours.text} />
           </TouchableOpacity>
         ),
         tabBarIcon: ({ color, size }) => {

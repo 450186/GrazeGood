@@ -7,6 +7,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 
+import Colours from '../styles/colours.js';
+import Styles from '../styles/styles.js';
+
 export default function ScanScreen( { navigation } ) {
   const scanLock = useRef(false);
   const [scanned, setScanned] = useState(false);
@@ -262,12 +265,12 @@ async function fetchProduct(productCode) {
     fetchProduct(data);
   };
 
-  if(!permission) return <Text>Requesting for camera permission</Text>
+  if(!permission) return <Text>Requesting camera permission</Text>
   if(!permission.granted) {
     return (
-      <View style={styles.MainContainer}>
-            <View style={styles.prePermissionContainer}>
-              <Text style={styles.prePermissionText}>
+      <View style={Styles.StaticPage}>
+            <View style={Styles.prePermissionContainer}>
+              <Text style={Styles.prePermissionText}>
                 GrazeGood needs camera access to scan products. Please grant camera permission to use the scanning feature.
               </Text>
               <TouchableOpacity style={styles.Button} 
@@ -295,19 +298,9 @@ async function fetchProduct(productCode) {
   }
 
   return (
-    <View style={styles.MainContainer}>
+    <View style={Styles.StaticPage}>
       <StatusBar style="auto" />
-      {/* <ScrollView
-        contentInsetAdjustmentBehavior="never"
-        automaticallyAdjustContentInsets={false}
-        style={{
-          flex: 1,
-          backgroundColor: "#C3B59F",
-        }}
-        contentContainerStyle={{
-          paddingBottom: 40,
-        }}
-      > */}
+
       {cameraOpen ? (
         <>
         {!isPremium && (
@@ -365,7 +358,7 @@ async function fetchProduct(productCode) {
         <>
           <View>
             <View style={styles.scanHeaderContainer}>
-              <Text style={styles.scanTitle}>GrazeGood</Text>
+              <Text style={Styles.Title}>Scan a Product</Text>
               <View style={styles.adCountContainer}>
                 <View style={styles.adButtonWrapper}>
                   <TouchableOpacity style={styles.watchAdsBtnClosed} onPress={rewardScans}>
@@ -379,27 +372,27 @@ async function fetchProduct(productCode) {
               </View>
 
             </View>
-            <Text style={[styles.SubTitle, {marginTop: 20}]}>
+            <Text style={[Styles.text, {marginTop: 20}]}>
               Scan a product to check how good it is for you and the environment!
             </Text>
           </View>
 
           <View style={styles.SubContainer}>
-            <Text style={styles.text}>
+            <Text style={Styles.text}>
               Hit the save button to save your products and review them later in the Saved tab
             </Text>
-            <Text style={styles.text}>
+            <Text style={Styles.text}>
               The higher the eco score, the better for you and the environment!
             </Text>
-            <Text style={styles.text}>
+            <Text style={Styles.text}>
               To start scanning, click the button below
             </Text>
             {!isPremium && (
               <>
-                <Text style={styles.text}>
+                <Text style={Styles.text}>
                   Please Note, you get 5 scans per day and need to watch ads to get more
                 </Text>
-                <Text style={[styles.text, styles.lastText]}>
+                <Text style={[Styles.text, styles.lastText]}>
                   Buy premium to get unlimited scans <TouchableOpacity onPress={() => navigation.navigate("Premium")}><Text style={styles.premiumNav}>here</Text></TouchableOpacity>
                 </Text>
             </>
@@ -473,65 +466,65 @@ async function fetchProduct(productCode) {
           navigation.navigate("Product", { barcode: lastBarcode });
         }}
         >
-        <View style={styles.ProductInfo}>
-          <Text style={styles.TitleText}>
+        <View style={Styles.ProductInfo}>
+          <Text style={Styles.headingText}>
             Product Name: {(product.product_name ?? "Unknown").replace(/&quot;|&#039;/g, "'")}
           </Text>
 
-          <Text style={styles.TitleText}>
+          <Text style={Styles.headingText}>
             Brand: {product.brands ?? "Unknown"}
           </Text>
 
           {product.nutriments?.["energy-kcal_100g"] != null && (
-            <Text style={styles.infoText}>
+            <Text style={Styles.infoText}>
               Calories (kcal): {product.nutriments["energy-kcal_100g"].toFixed(2)}
             </Text>
           )}
 
           {product.nutriments?.["proteins_100g"] != null && (
-            <Text style={styles.infoText}>
+            <Text style={Styles.infoText}>
               Proteins (g): {product.nutriments["proteins_100g"]}
             </Text>
           )}
 
           {product.nutriments?.["fat_100g"] != null && (
-            <Text style={styles.infoText}>
+            <Text style={Styles.infoText}>
               Fats (g): {product.nutriments["fat_100g"]}
             </Text>
           )}
 
           {product.nutriments?.["carbohydrates_100g"] != null && (
-            <Text style={styles.infoText}>
+            <Text style={Styles.infoText}>
               Carbohydrates (g): {product.nutriments["carbohydrates_100g"]}
             </Text>
           )}
 
           {product.nutriments?.["sugars_100g"] != null && (
-            <Text style={styles.infoText}>
+            <Text style={Styles.infoText}>
               Sugars (g): {product.nutriments["sugars_100g"]}
             </Text>
           )}
 
           {product.nutriments?.["salt_100g"] != null && (
-            <Text style={styles.infoText}>
+            <Text style={Styles.infoText}>
               Salt (g): {product.nutriments["salt_100g"]}
             </Text>
           )}
 
           {product.nutriments?.["cholesterol_100g"] != null && (
-            <Text style={styles.infoText}>
+            <Text style={Styles.infoText}>
               Cholesterol (mg): {product.nutriments["cholesterol_100g"]}
             </Text>
           )}
 
           {product.nutriments?.["fiber_100g"] != null && (
-            <Text style={styles.infoText}>
+            <Text style={Styles.infoText}>
               Fiber (g): {product.nutriments["fiber_100g"]}
             </Text>
           )}
 
           {product.nutriments?.["saturated-fat_100g"] != null && (
-            <Text style={styles.infoText}>
+            <Text style={Styles.infoText}>
               Saturated Fat (g): {product.nutriments["saturated-fat_100g"]}
             </Text>
           )}
@@ -546,14 +539,14 @@ async function fetchProduct(productCode) {
 
           {ecoScore !== null && (
             <>
-            <View style={styles.divider}></View>
-              <Text style={[styles.TitleText, {marginBottom: 10}]}>Eco Score: {ecoScore} {GetEcoIndicator(ecoScore)}</Text>
+            <View style={Styles.divider}></View>
+              <Text style={[Styles.headingText, {marginBottom: 10}]}>Eco Score: {ecoScore} {GetEcoIndicator(ecoScore)}</Text>
             </>
           )}
 
           {ecoReason && ecoReason.length > 0 && (
             <>
-              <View style={styles.divider}></View>
+              <View style={Styles.divider}></View>
 
               {ecoReason.map((flag, index) => (
                 <Text key={index} style={styles.bodyText}>
@@ -594,67 +587,23 @@ async function fetchProduct(productCode) {
 }
 
 const styles = StyleSheet.create({
-  MainContainer: {
-    flex: 1,
-    backgroundColor: '#C3B59F',
-    padding: 20,
-  },
-  ProductInfo: {
-    marginTop: 20,
-    backgroundColor: '#215C3D',
-    padding: 10,
-    borderRadius: 10,
-    alignItems: 'center',
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 5,
-      height: 5
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    elevation: 5
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#A0AF84',
-    width: "100%",
-    marginVertical: 10,
-  },
-  text: {
-    color: '#215C3D',
-    fontSize: 20,
-    margin: 5,
-    textAlign: 'center',
-  },
   lastText: {
     marginTop: 50,
   },
-  infoText: {
-    color: '#a0af84',
-    fontSize: 16,
-    textAlign: 'center',
-    margin: 0
-  },
-  TitleText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#A0AF84'
-  },
+
   openScannerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   openScannerButton: {
-    backgroundColor: '#108A2C',
+    backgroundColor: Colours.button,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
   },
   Button: {
-    backgroundColor: '#108A2C',
+    backgroundColor: Colours.button,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
@@ -665,20 +614,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scanAgainButton: {
-    backgroundColor: '#108A2C',
+    backgroundColor: Colours.button,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
     alignSelf: 'center',
   },
   ButtonText: {
-    color: '#fff',
+    color: Colours.text,
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   closeButtonScanner: {
-    backgroundColor: "#108A2C",
+    backgroundColor: Colours.button,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
@@ -699,12 +648,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: 'center',
     marginBottom: 20
-  },
-  SubTitle: {
-    color: "#215C3D",
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center"
   },
   Camera: {
     height: "100%",

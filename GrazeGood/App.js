@@ -4,6 +4,13 @@ import RootNavigator from "./navigation/RootNavigator";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import { BaseToast, ErrorToast, InfoToast } from "react-native-toast-message";
+import Styles from "./styles/styles.js";
+import Colours from "./styles/colours.js";
+import {
+  useFonts,
+  Montserrat_700Bold,
+  Montserrat_600SemiBold,
+} from "@expo-google-fonts/montserrat";
 
 const toastConfig = {
   success: (props) => (
@@ -11,7 +18,7 @@ const toastConfig = {
       {...props}
       style={{
         borderLeftColor: "#108A2C",
-        backgroundColor: "#2D4739",
+        backgroundColor: Colours.background,
         height: 100
       }}
       contentContainerStyle={{
@@ -19,11 +26,11 @@ const toastConfig = {
       }}
       text1Style={{
         fontWeight: "bold",
-        color: "#108A2C",
+        color: Colours.text,
       }}
       text2Style={{
         fontWeight: "bold",
-        color: "#108A2C",
+        color: Colours.text,
       }}
     />
   ),
@@ -32,7 +39,7 @@ const toastConfig = {
       {...props}
       style={{
         borderLeftColor: "#fa4437",
-        backgroundColor: "#2D4739",
+        backgroundColor: Colours.background,
         height: 100
       }}
       contentContainerStyle={{
@@ -56,7 +63,7 @@ const toastConfig = {
       {...props}
       style={{
         borderLeftColor: "#108A2C",
-        backgroundColor: "#2D4739",
+        backgroundColor: Colours.background,
       }}
       contentContainerStyle={{
         paddingHorizontal: 15,
@@ -64,17 +71,25 @@ const toastConfig = {
       text1Style={{
         fontSize: 20,
         fontWeight: "bold",
-        color: "#108A2C",
+        color: Colours.text,
       }}
       text2Style={{
         fontSize: 16,
         fontWeight: "bold",
-        color: "#108A2C",
+        color: Colours.text,
       }}
     />
   )
 }
 export default function App() {
+    const [fontsLoaded] = useFonts({
+    Montserrat_700Bold,
+    Montserrat_600SemiBold,
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer>

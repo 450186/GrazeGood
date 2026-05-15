@@ -9,6 +9,9 @@ import RegisterScreen from "../Screens/RegisterScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
 import ProductScreen from "../Screens/ProductScreen";
 
+import Styles from "../styles/styles.js";
+import Colours from "../styles/colours.js";
+
 const Stack = createNativeStackNavigator();
 
 export default function RootNavigator() {
@@ -43,11 +46,11 @@ export default function RootNavigator() {
     <Stack.Navigator screenOptions={{ 
       headerShown: true,
       headerStyle: {
-          backgroundColor: "#215C3D",
+          backgroundColor: Colours.background,
           height: 120,
       },
       headerTitleStyle: {
-          color: "#A0AF84",
+          color: Colours.text,
           fontSize: 30,
       },
       headerBackVisible: true,

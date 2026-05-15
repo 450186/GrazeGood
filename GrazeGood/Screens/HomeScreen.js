@@ -3,7 +3,9 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useState, useCallback, useEffect } from "react";
 import React from "react";
 import { View, Text, Button, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
-
+import { FontAwesome } from "@expo/vector-icons";
+import Styles from "../styles/styles.js"
+import Colours from "../styles/colours.js"
 export default function HomeScreen( { setUser, navigation } ) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,24 +59,32 @@ useEffect(() => {
 
   return (
     <ScrollView
-      style={{ flex: 1, backgroundColor: "#C3B59F" }}
-      contentContainerStyle={{
-      flexGrow: 1,
-      justifyContent: "flex-start",
-      alignItems: "center",
-      backgroundColor: "#C3B59F",
-      paddingBottom: 40,
-    }}
+      style={{ flex: 1, backgroundColor: Colours.background }}
+      contentContainerStyle={Styles.Page}
     >
-      <Text style={styles.Title}>GrazeGood</Text>
+      <Text style={Styles.Title}>Home</Text>
+      <View style={Styles.HomeTextContainer}>
+        <Text style={Styles.SubTitle}>Saved Products ({products.length})</Text>
+        <View style={Styles.SubTitleRight}>
+        <TouchableOpacity
+        style={Styles.SeeMoreBtn}
+        onPress={() => navigation.navigate("Saved")}
 
-      <Text style={{color: "#215C3D", fontSize: 20, fontWeight: "bold", textAlign: "left", marginBottom: 10}}>Saved Products ({products.length})</Text>
-    <View style={styles.RecentContainer}>
+        >
+          <View style={Styles.SeeMoreContainer}>
+            <Text style={Styles.SeeMoreText}>View All</Text>
+            <FontAwesome name="arrow-circle-o-right" size={18} color={Colours.text} />
+          </View>
+        </TouchableOpacity>
+
+        </View>
+      </View>
+    <View style={Styles.FlatListContainer}>
       {products.length === 0 ? (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <View style={styles.NoProducts}>
-          <Text style={styles.falseText}>No saved Products</Text>
-          <Text style={styles.falseText}>Scan a product to save it</Text>
+        <View style={Styles.NoProducts}>
+          <Text style={Styles.falseText}>No saved Products</Text>
+          <Text style={Styles.falseText}>Scan a product to save it</Text>
         </View>
         </View>
       ) : (
@@ -92,28 +102,30 @@ useEffect(() => {
             activeOpacity={0.8}
             onPress={() => navigation.navigate("Product", { barcode: item.barcode })}
             >
-              <View style={styles.ProductContainer}>
-                <View style={styles.Product}>
+              <View style={Styles.ProductContainer}>
+                <View style={Styles.ProductInfo}>
                   {item.imageUrl ? (
                     <Image
-                      style={styles.ProductImage}
+                      style={Styles.ProductImage}
                       source={{ uri: item.imageUrl }}
                     />
                   ) : (
                     <Image
-                      style={styles.ProductImage}
+                      style={Styles.ProductImage}
                       source={require("../assets/product-placeholder.jpg")}
                     />
                   )} 
                   <Text
-                  style={styles.ProductName}
-                  numberOfLines={4}
+                  style={Styles.ProductName}
+                  numberOfLines={3}
                   ellipsizeMode="tail"
                   >
                     {item.product_name.replace(/&quot;|&#039;/g, "'")}
                   </Text>
-                  <View style={{flex: 1}}/>
-                  <Text style={styles.EcoScore}>Eco Score: {item.eco?.ecoScore ?? item.ecoScore ?? "-"}</Text>
+                  <View style={Styles.EcoScoreContainer}>
+                    <FontAwesome name="leaf" size={14} color={Colours.text} />
+                    <Text style={Styles.EcoScore}>Eco Score: {item.eco?.ecoScore ?? item.ecoScore ?? "-"}</Text>
+                  </View>
                 </View>
               </View>
             </TouchableOpacity>
@@ -121,18 +133,20 @@ useEffect(() => {
         />
       )}
     </View>
-      <Text style={{color: "#215C3D",marginTop: 20, fontSize: 20, fontWeight: "bold", textAlign: "center", marginBottom: 10}}>GrazeGood Picks of the Week</Text>
+      <View style={Styles.HomeTextContainer}>
+        <Text style={Styles.SubTitle}>Products of the Week</Text>
+      </View>
 
-    <View style={styles.weeklyContainer}>
+    <View style={Styles.FlatListContainer}>
       {loadingPOTW ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#A0AF84" />
-          <Text style={styles.loadingText}>Loading picks of the week...</Text>
+        <View style={Styles.loadingContainer}>
+          <ActivityIndicator size="large" color={Colours.text} />
+          <Text style={Styles.loadingText}>Loading picks of the week...</Text>
         </View>
       ) : productOfTheWeek.length === 0 ? (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <View style={styles.NoProducts}>
-          <Text style={styles.falseText}>No picks of the week</Text>
+        <View style={Styles.NoProducts}>
+          <Text style={Styles.falseText}>No picks of the week</Text>
         </View>
         </View>
       ) : (
@@ -150,28 +164,30 @@ useEffect(() => {
             activeOpacity={0.8}
             onPress={() => navigation.navigate("Product", { barcode: item.barcode })}
             >
-            <View style={styles.ProductContainer}>
-              <View style={styles.Product}>
+            <View style={Styles.ProductContainer}>
+              <View style={Styles.ProductInfo}>
                 {item.image_front_small_url ? (
                   <Image
-                    style={styles.ProductImage}
+                    style={Styles.ProductImage}
                     source={{ uri: item.image_front_small_url }}
                   />
                 ) : (
                   <Image
-                    style={styles.ProductImage}
+                    style={Styles.ProductImage}
                     source={require("../assets/product-placeholder.jpg")}
                   />
                 )} 
                 <Text
-                style={styles.ProductName}
+                style={Styles.ProductName}
                 numberOfLines={4}
                 ellipsizeMode="tail"
                 >
                 {(item.product_name ?? "Unknown").replace(/&quot;|&#039;/g, "'")}
                 </Text>
-                <View style={{flex: 1}}/>
-                <Text style={styles.EcoScore}>Eco Score: {item.eco?.ecoScore}</Text>
+                  <View style={Styles.EcoScoreContainer}>
+                    <FontAwesome name="leaf" size={14} color={Colours.text} />
+                    <Text style={Styles.EcoScore}>Eco Score: {item.eco?.ecoScore ?? item.ecoScore ?? "-"}</Text>
+                  </View>
               </View>
             </View>
             </TouchableOpacity>
@@ -184,129 +200,6 @@ useEffect(() => {
 
 }
 const styles = StyleSheet.create({
-  Title: {
-    color: "#215C3D",
-    fontSize: 30,
-    fontWeight: "bold",
-    padding: 20
-  },
-  RecentContainer: {
-    borderRadius: 10,
-    padding: 0,
-    backgroundColor: "#215C3D",
-    width: "100%",
-    height: 300,
 
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 5,
-      height: 5
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  falseText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#A0AF84",
-    textAlign: "center",
-    justifyContent: "center",
-  },
-  Product: {
-    alignItems: "center",
-    justifyContent: "center",
-    margin: 15,
-    maxWidth: 100,
-    gap: 5
-  },
-  ProductName: { 
-    color: "#A0AF84", 
-    fontSize: 14, 
-    textAlign: "center", 
-    fontWeight: "bold",
-    width: 100,
-    minHeight: 50
-  },
-  ProductImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-  },
-  EcoScore: { 
-    color: "#A0AF84", 
-    fontSize: 14, 
-    textAlign: "center",
-    marginBottom: 10
-  },
-  ProductContainer: {
-    padding: 10,
-    backgroundColor: "#2D4739",
-    borderRadius: 10,
-    marginHorizontal: 10,
-    marginVertical: 20,
-    width: 150,
-    height: 250,
-    
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 5,
-      height: 5
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  NoProducts: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 20, 
-  },
-  Button: {
-    backgroundColor: '#108A2C',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignSelf: 'center',
-  },
-  ButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  weeklyContainer: {
-    marginHorizontal: 20,
-    width: "100%",
-    height: 300,
-    backgroundColor: "#215C3D",
-    borderRadius: 10
-  },
-    emptyContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#C3B59F",
-    margin: 0,
-  },
-    falseText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "red",
-    textAlign: "center",
-    justifyContent: "center",
-  },
-  loadingContainer: {
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loadingText: {
-    color: "#A0AF84",
-    fontSize: 16,
-    fontWeight: "bold",
-    marginTop: 10,
-    textAlign: "center",
-  },
+
 });
