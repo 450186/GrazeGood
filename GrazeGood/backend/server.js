@@ -685,6 +685,28 @@ app.get("/user/:username/profile", async (req, res) => {
     avatarUrl: `https://api.dicebear.com/9.x/personas/png?seed=${encodeURIComponent(seed)}`
   })
 })
+app.post("/user/:username/randomise-avatar", async (req, res) => {
+  try {
+    const newSeed = Math.random().toString(36).slice(2) + Date.now();
+
+    const user = await userData.findOneAndUpdate(
+      { username: req.params.username },
+      { $set: { avatarSeed: newSeed } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.json({
+      message: "Avatar updated",
+      avatarUrl: `https://api.dicebear.com/9.x/personas/png?seed=${encodeURIComponent(newSeed)}`
+    });
+  } catch (e) {
+    return res.status(500).json({ error: "Server error" });
+  }
+});
 app.post("/login", async (req, res) => {
   try {
     const {username, password} = req.body;

@@ -470,5 +470,20 @@ export default StyleSheet.create({
     ingredientTextHigh: {
         color: Colours.high,
         fontWeight: "bold",
+    },
+    Premiumtext: {
+        color: Colours.text,
+        fontSize: 16,
+        textAlign: "center",
+        marginBottom: 5
+    },
+    logoutButton: {
+        backgroundColor: Colours.button,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        marginVertical: 10,
+        width: "30%",
+        alignSelf: "center"
     }
 })
