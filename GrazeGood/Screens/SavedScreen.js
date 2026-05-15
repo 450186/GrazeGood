@@ -6,6 +6,9 @@ import { Pressable } from "react-native";
 import { FontAwesome5, FontAwesome6 } from "@expo/vector-icons";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 
+import Colours from "../styles/colours.js";
+import Styles from "../styles/styles.js";
+
 export default function SavedScreen({ navigation }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,15 +82,15 @@ export default function SavedScreen({ navigation }) {
   }
   if(loading) {
     return (
-      <View style={styles.MainContainer}>
+      <View style={Styles.savedPage}>
         <ActivityIndicator size="large" />
       </View>
     );
   }
   return (
-    <View style={styles.MainContainer}>
+    <View style={Styles.savedPage}>
       <FlatList
-        style={styles.flatlist}
+        style={Styles.SavedFlatlist}
         data={products}
         keyExtractor={(item) => item.barcode}
         refreshing={refreshing}
@@ -98,8 +101,8 @@ export default function SavedScreen({ navigation }) {
           activeOpacity={0.8}
           onPress={() => navigation.navigate("Product", { barcode: item.barcode })}>
           <Swipeable renderRightActions={() => renderRightActions(item.barcode)}>
-            <View style={styles.savedProductContainer}>
-              <View style={styles.savedProduct}>
+            <View style={Styles.SavedProductContainer}>
+              <View style={Styles.savedProduct}>
                 {item.imageUrl ? (
                     <Image
                       source={{ uri: item.imageUrl }}
@@ -111,13 +114,13 @@ export default function SavedScreen({ navigation }) {
                       source={require("../assets/product-placeholder.jpg")}
                     />
                 )}
-                <View style={styles.savedProductInfo}>
-                  <Text style={{ fontSize: 16, fontWeight: "bold", color: "#A0AF84" }}>
+                <View style={Styles.savedProductInfo}>
+                  <Text style={{ fontSize: 16, fontWeight: "bold", color: Colours.text }}>
                     {item.product_name ?? "Unknown Product"}
                   </Text>
-                  <Text style={{color: "#A0AF84", fontSize: 15, fontWeight: "bold", marginTop: 10}}>{item.brands}</Text>
-                  <View style={styles.divider}></View>
-                  <Text style={{color: "#A0AF84", fontSize: 18}}>Eco Score: {item.ecoScore ?? "N/A"}</Text>
+                  <Text style={{color: Colours.text, fontSize: 15, fontWeight: "bold", marginTop: 10}}>{item.brands}</Text>
+                  <View style={Styles.divider}></View>
+                  <Text style={{color: Colours.text, fontSize: 18}}>Eco Score: {item.ecoScore ?? "N/A"}</Text>
                 </View>
               </View>
             </View>
@@ -136,17 +139,6 @@ export default function SavedScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  MainContainer: {
-    flex: 1, 
-    justifyContent: "center", 
-    backgroundColor: "#C3B59F"
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#A0AF84',
-    width: "100%",
-    marginVertical: 10,
-  },
   falseText: {
     fontSize: 20,
     fontWeight: "bold",
@@ -158,39 +150,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#C3B59F",
+    backgroundColor: Colours.background,
     margin: 0,
-  },
-  flatlist: {
-    flex: 1,
-    backgroundColor: "#C3B59F",
-    margin: 0,
-  },
-  savedProductContainer: {
-    backgroundColor: "#215C3D",
-    padding: 10,
-    margin: 10,
-    borderRadius: 10,
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 5,
-      height: 5
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  savedProduct: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  savedProductInfo: {
-    display: "flex",
-    flex: 1,
-    marginLeft: 10,
-    justifyContent: "space-between",
   },
   deleteButton: {
     justifyContent: "center",

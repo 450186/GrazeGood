@@ -28,6 +28,10 @@ export default StyleSheet.create({
         justifyContent: "flex-start",
         paddingBottom: 40
     },
+    savedPage: {
+        flex: 1,
+        backgroundColor: Colours.background
+    },
     StaticPage: {
         backgroundColor: Colours.background,
         justifyContent: "flex-start",
@@ -260,5 +264,36 @@ export default StyleSheet.create({
       opacity: 0.8,
       marginTop: 2,
       marginBottom: 4,
+    },
+    SavedFlatlist: {
+        flex: 1,
+        backgroundColor: Colours.background,
+        margin: 0
+    },
+    SavedProductContainer: {
+        backgroundColor: Colours.cards,
+        padding: 10,
+        margin: 10,
+        borderRadius: 10,
+
+        shadowColor: "#414040ff",
+        shadowOffset: {
+        width: 1,
+        height: 1
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    savedProduct: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    savedProductInfo: {
+        display: "flex",
+        flex: 1,
+        marginLeft: 10,
+        justifyContent: "space-between",
     }
 })

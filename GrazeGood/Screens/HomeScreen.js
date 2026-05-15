@@ -67,19 +67,20 @@ useEffect(() => {
       <Text style={Styles.Title}>Home</Text>
       <View style={Styles.HomeTextContainer}>
         <Text style={Styles.SubTitle}>Recent Saved Products</Text>
-        <View style={Styles.SubTitleRight}>
-        <TouchableOpacity
-        style={Styles.SeeMoreBtn}
-        onPress={() => navigation.navigate("Saved")}
+        {products.length > 5 && (
+          <View style={Styles.SubTitleRight}>
+          <TouchableOpacity
+          style={Styles.SeeMoreBtn}
+          onPress={() => navigation.navigate("Saved")}
 
-        >
-          <View style={Styles.SeeMoreContainer}>
-            <Text style={Styles.SeeMoreText}>View All</Text>
-            <FontAwesome name="arrow-circle-o-right" size={16} color={Colours.text} />
+          >
+            <View style={Styles.SeeMoreContainer}>
+              <Text style={Styles.SeeMoreText}>View All</Text>
+              <FontAwesome name="arrow-circle-o-right" size={16} color={Colours.text} />
+            </View>
+          </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-
-        </View>
+        )}
       </View>
     <View style={Styles.FlatListContainer}>
       {products.length === 0 ? (

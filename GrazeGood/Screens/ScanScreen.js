@@ -656,15 +656,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: 'relative',
   },
-  scanTitle: {
-    color: Colours.text,
-    fontSize: 30,
-    fontWeight: "bold",
-    textAlign: 'center',
-    marginBottom: 20,
-    position: 'relative',
-    alignSelf: 'center',
-  },
   adCountContainer: {
     flexDirection: 'column',
     alignItems: 'center',
