@@ -12,6 +12,8 @@ export default function HomeScreen( { setUser, navigation } ) {
   const [productOfTheWeek, setProductOfTheWeek] = useState([]);
   const [loadingPOTW, setLoadingPOTW] = useState(true);
 
+  const recentProducts = products.slice(0, 5);
+
   async function loadProductOfTheWeek() {
     setLoadingPOTW(true);
     try {
@@ -64,7 +66,7 @@ useEffect(() => {
     >
       <Text style={Styles.Title}>Home</Text>
       <View style={Styles.HomeTextContainer}>
-        <Text style={Styles.SubTitle}>Saved Products ({products.length})</Text>
+        <Text style={Styles.SubTitle}>Recent Saved Products</Text>
         <View style={Styles.SubTitleRight}>
         <TouchableOpacity
         style={Styles.SeeMoreBtn}
@@ -73,7 +75,7 @@ useEffect(() => {
         >
           <View style={Styles.SeeMoreContainer}>
             <Text style={Styles.SeeMoreText}>View All</Text>
-            <FontAwesome name="arrow-circle-o-right" size={18} color={Colours.text} />
+            <FontAwesome name="arrow-circle-o-right" size={16} color={Colours.text} />
           </View>
         </TouchableOpacity>
 
@@ -89,7 +91,7 @@ useEffect(() => {
         </View>
       ) : (
         <FlatList
-          data={products}
+          data={recentProducts}
           keyExtractor={(item) => item.barcode}
           horizontal
           showsHorizontalScrollIndicator={false}

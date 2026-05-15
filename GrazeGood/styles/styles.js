@@ -4,6 +4,25 @@ import Colours from "./colours";
 
 
 export default StyleSheet.create({
+    logoContainer: {
+      display: "flex",
+      flexDirection: "row", 
+      alignItems: "center",
+      justifyContent: "center"
+    },
+    logo: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        left: -25
+    },
+    Grazegood: {
+        color: Colours.text,
+        fontSize: 30,
+        fontWeight: "bold",
+        marginBottom: 5,
+        left: -20
+    },
     Page: {
         backgroundColor: Colours.background,
         justifyContent: "flex-start",
@@ -27,8 +46,7 @@ export default StyleSheet.create({
         fontFamily: "Montserrat_700Bold",
         fontSize: 20, 
         fontWeight: "bold",
-        marginTop: 10,
-        marginLeft: 20,
+        marginLeft: 10,
         alignContent: "center"
     },
     HomeTextContainer: {
@@ -38,7 +56,6 @@ export default StyleSheet.create({
     SubTitleRight: {
         display: "flex",
         flexDirection: "row",
-        alignContent: "flex-end",
         marginRight: 5
     },
     SeeMoreBtn: {
@@ -49,10 +66,12 @@ export default StyleSheet.create({
     },
     SeeMoreText: {
         color: Colours.text,
+        fontFamily: "Montserrat_700Bold",
         fontWeight: "bold",
-        marginRight: 10,
+        marginRight: 5,
         alignContent: "center",
-        fontSize: 18
+        marginBottom: 2,
+        fontSize: 14
     },
     SeeMoreContainer: {
         marginTop: "auto",
@@ -182,4 +201,64 @@ export default StyleSheet.create({
         marginBottom: 5,
         color: Colours.text
     },
+    SubContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 50
+    },
+    Button: {
+        backgroundColor: Colours.button,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        marginVertical: 20
+    },
+    ButtonText: {
+        color: "white",
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    ScannedInfo: {
+        backgroundColor: Colours.cards,
+        width: "100%",
+        marginHorizontal: "auto",
+        padding: 20,
+        borderRadius: 10,
+        justifyContent: "center",
+        alignItems: "center",
+
+        shadowColor: "#414040ff",
+        shadowOffset: {
+        width: 1,
+        height: 1
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    ProductHead: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: Colours.text,
+        textAlign: "center",
+    },
+    ProductText: {
+        textAlign: "center",
+        color: Colours.text
+    },
+    EcoReason: {
+        textAlign: "center",
+        color: Colours.text,
+        fontSize: 16,
+        fontWeight: "bold"
+    },
+    EcoConfidence: {
+      color: "#A0AF84",
+      fontSize: 13,
+      opacity: 0.8,
+      marginTop: 2,
+      marginBottom: 4,
+    }
 })

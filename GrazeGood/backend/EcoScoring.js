@@ -332,21 +332,8 @@ function calculateEcoScore(product) {
             ecoScore: redFlag ? 0 : 40,
             confidence: 0,
             missingVariables: missing,
-            ecoReason: redFlags.length > 0
-            ? redFlags
-            : [
-                {
-                    impact: "low",
-                    message: "Not enough data — estimated score"
-                }
-            ]
+            ecoReason: redFlags
         };
-    }
-    if (weightTotal < 30 || missing.length > 0) {
-    redFlags.push({
-        impact: "low",
-        message: "Score based on limited available data"
-    });
     }
 
     finalScore = Math.max(0, Math.min(100, finalScore));

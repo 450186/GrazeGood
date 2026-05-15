@@ -1,12 +1,12 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesome } from "@expo/vector-icons";
-import { TouchableOpacity, Text } from "react-native";
+import { TouchableOpacity, Text, Image, View } from "react-native";
 
 import HomeScreen from "../Screens/HomeScreen";
 import ScanScreen from "../Screens/ScanScreen";
 import SavedScreen from "../Screens/SavedScreen";
-import PremiumScreen from "../Screens/PremiumScreen";
+import ProfileScreen from "../Screens/ProfileScreen";
 
 import Styles from "../styles/styles.js";
 import Colours from "../styles/colours.js";
@@ -33,7 +33,19 @@ export default function TabNavigator({ setUser }) {
           color: Colours.text,
           fontSize: 30,
         },
-        headerTitle: "GrazeGood",
+        headerTitle: () => {
+          return (
+            <View style={Styles.logoContainer}>
+              <Image
+                source={require("../assets/GrazeLogo.png")}
+                style={Styles.logo}
+              />
+              <Text style={Styles.Grazegood}>
+                GrazeGood
+              </Text>
+            </View>
+          )
+        },
         tabBarItemStyle: {
           justifyContent: "center",
           alignItems: "center"
@@ -43,15 +55,6 @@ export default function TabNavigator({ setUser }) {
           fontWeight: 500,
         },
         headerShown: true,
-
-        headerRight: () => (
-          <TouchableOpacity 
-          onPress={() => navigation.navigate("Profile")}
-          style={{marginRight: 15}}
-          >
-            <FontAwesome name="user" size={24} color={Colours.text} />
-          </TouchableOpacity>
-        ),
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
@@ -61,8 +64,8 @@ export default function TabNavigator({ setUser }) {
             iconName = "barcode";
           } else if (route.name === "Saved") {
             iconName = "bookmark";
-          } else if (route.name === "Premium") {
-            iconName = "star";
+          } else if (route.name === "Profile") {
+            iconName = "user";
           }
           return <FontAwesome name={iconName} size={size} color={color} />
         }
@@ -72,21 +75,8 @@ export default function TabNavigator({ setUser }) {
         {(props) => <HomeScreen {...props} setUser={setUser} />}
       </Tab.Screen>
       <Tab.Screen name="Scan" component={ScanScreen} />
-      <Tab.Screen 
-      name="Premium" 
-      component={PremiumScreen}
-      options={{
-        tabBarIcon:({focused}) => (
-          <FontAwesome name="star" size={24} color={focused ? "#c1ba03ff" : "#dfd811ff"} />
-        ),
-        tabBarLabel: ({ focused, color }) => (
-          <Text style={{ color: focused ? "#dfd811ff" : "#c1ba03ff", fontSize: 11, fontWeight: 500}}>
-            Premium
-          </Text>
-        ),
-      }}
-      />
       <Tab.Screen name="Saved" component={SavedScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
