@@ -45,6 +45,13 @@ export default StyleSheet.create({
         padding: 20,
         textAlign: "center"
     },
+    Brand: {
+        color: Colours.text,
+        fontSize: 22,
+        fontWeight: "bold",
+        textAlign: "center",
+        marginBottom: 10,        
+    },
     SubTitle: {
         color: Colours.text, 
         fontFamily: "Montserrat_700Bold",
@@ -247,6 +254,7 @@ export default StyleSheet.create({
         fontWeight: "bold",
         color: Colours.text,
         textAlign: "center",
+        marginBottom: 10
     },
     ProductText: {
         textAlign: "center",
@@ -259,7 +267,7 @@ export default StyleSheet.create({
         fontWeight: "bold"
     },
     EcoConfidence: {
-      color: "#A0AF84",
+      color: Colours.text,
       fontSize: 13,
       opacity: 0.8,
       marginTop: 2,
@@ -295,5 +303,172 @@ export default StyleSheet.create({
         flex: 1,
         marginLeft: 10,
         justifyContent: "space-between",
+    },
+    ecoContainer: {
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 5,
+        backgroundColor: Colours.cards,
+        borderRadius: 10,
+        padding: 10,
+        width: "92%",
+        margin: "auto",
+
+        shadowColor: "#414040ff",
+        shadowOffset: {
+        width: 1,
+        height: 1
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    ecoScoreLabel: {
+        color: Colours.text,
+        fontSize: 14,
+        fontWeight: "bold",
+        textAlign: "center",
+        marginBottom: 5,
+    },
+    SectionTitle: {
+        color: Colours.text,
+        fontSize: 26,
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+    SectionSubtitle: {
+        color: Colours.text,
+        fontSize: 16,
+        marginBottom: 15,
+        textAlign: "center",
+    },
+    nutritionContainer: {
+        width: "92%",
+        backgroundColor: Colours.cards,
+        borderRadius: 18,
+        padding: 18,
+        margin: "auto",
+        marginBottom: 20,
+
+        shadowColor: "#414040ff",
+        shadowOffset: {
+        width: 1,
+        height: 1
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    subRow: {
+        width: "90%",
+        alignSelf: "flex-end",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingVertical: 5,
+    },
+    nutritionLabel: {
+        color: Colours.text,
+        fontSize: 17,
+        fontWeight: "bold",
+        flex: 1,
+    },
+    subLabel: {
+        color: Colours.text,
+        fontSize: 15,
+    },
+    rowRight: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+        minWidth: 90,
+        justifyContent: "flex-end",
+    },
+    nutritionValue: {
+        color: Colours.text,
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    rowDivider: {
+        height: 1,
+        backgroundColor: Colours.text,
+        marginVertical: 5,
+    },
+    Image: {
+        width: 200,
+        height: 200,
+        marginBottom: 20,
+        borderRadius: 15,
+        alignSelf: "center",
+        marginTop: 20,
+    },
+    nutritionRow: {
+        width: "100%",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingVertical: 9,
+    },
+    levelContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 5,
+    },
+    levelText: {
+        color: Colours.text,
+        fontSize: 14,
+        fontWeight: "bold",
+    },
+    productPageEcoScore: {
+        color: Colours.text,
+        fontSize: 26,
+        fontWeight: "bold",
+    },
+    ingredientsContainer: {
+        width: "92%",
+        backgroundColor: Colours.cards,
+        borderRadius: 18,
+        padding: 18,
+        marginTop: 20,
+        margin: "auto",
+        marginBottom: 40,
+
+        shadowColor: "#414040ff",
+        shadowOffset: {
+        width: 1,
+        height: 1
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    ingredient: {
+        color: Colours.text,
+        fontSize: 16,
+        textAlign: "center",
+        marginBottom: 5
+    },
+    ingredientRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+        marginBottom: 8,
+    },
+    ingredientText: {
+        color: Colours.text,
+        fontSize: 16,
+        flex: 1,
+    },
+    ingredientTextLow: {
+        color: Colours.low,
+        fontWeight: "bold",
+    },
+    ingredientTextMedium: {
+        color: Colours.medium,
+        fontWeight: "bold",
+    },
+    ingredientTextHigh: {
+        color: Colours.high,
+        fontWeight: "bold",
     }
 })

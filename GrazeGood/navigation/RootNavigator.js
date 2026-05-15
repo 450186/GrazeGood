@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, View, Image, Text } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -67,7 +67,23 @@ export default function RootNavigator() {
           <Stack.Screen name="Profile">
             {(props) => <ProfileScreen {...props} setUser={setUser} />}
           </Stack.Screen>
-          <Stack.Screen name="Product" component={ProductScreen} />
+          <Stack.Screen
+          options={{
+            headerTitle: () => {
+              return (
+                <View style={Styles.logoContainer}>
+                  <Image
+                    source={require("../assets/GrazeLogo.png")}
+                    style={Styles.logo}
+                  />
+                  <Text style={Styles.Grazegood}>
+                    GrazeGood
+                  </Text>
+                </View>
+              )
+            }
+          }}
+          name="Product" component={ProductScreen} />
         </>
       ) : (
         <>

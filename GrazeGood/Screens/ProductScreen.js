@@ -1,6 +1,10 @@
 import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
 import { useEffect, useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
+
+import Colours from "../styles/colours.js";
+import Styles from "../styles/styles.js";
+
 export default function ProductScreen({ route }) {
   const { barcode } = route.params;
   const [product, setProduct] = useState(null);
@@ -25,24 +29,24 @@ export default function ProductScreen({ route }) {
 
     if (value > high) {
       return (
-        <View style={styles.levelContainer}>
-          <Text style={styles.levelText}>High</Text>
-          <FontAwesome name="exclamation-triangle" size={16} color="#FF3B30" />
+        <View style={Styles.levelContainer}>
+          <Text style={Styles.levelText}>High</Text>
+          <FontAwesome name="exclamation-triangle" size={16} color={Colours.high} />
         </View>
       );
     }
     if (value > medium) {
       return (
-        <View style={styles.levelContainer}>
-          <Text style={styles.levelText}>Medium</Text>
-          <FontAwesome name="exclamation-triangle" size={16} color="yellow" />
+        <View style={Styles.levelContainer}>
+          <Text style={Styles.levelText}>Medium</Text>
+          <FontAwesome name="exclamation-triangle" size={16} color={Colours.medium} />
         </View>
       );
     }
     return (
-      <View style={styles.levelContainer}>
-        <Text style={styles.levelText}>Low</Text>
-        <FontAwesome name="check-square-o" size={16} color="limegreen" />
+      <View style={Styles.levelContainer}>
+        <Text style={Styles.levelText}>Low</Text>
+        <FontAwesome name="check-square-o" size={16} color={Colours.low} />
       </View>
     );
   }
@@ -69,12 +73,12 @@ export default function ProductScreen({ route }) {
   function NutritionRow({ label, value, unit = "g", levelType, sub = false }) {
     if (value == null) return null;
     return (
-      <View style={sub ? styles.subRow : styles.nutritionRow}>
-        <Text style={sub ? styles.subLabel : styles.nutritionLabel}>
+      <View style={sub ? Styles.subRow : Styles.nutritionRow}>
+        <Text style={sub ? Styles.subLabel : Styles.nutritionLabel}>
           {label}
         </Text>
-        <View style={styles.rowRight}>
-          <Text style={styles.nutritionValue}>
+        <View style={Styles.rowRight}>
+          <Text style={Styles.nutritionValue}>
             {typeof value === "number" ? value.toFixed(unit === "kcal" ? 0 : 1) : value}
             {unit ? ` ${unit}` : ""}
           </Text>
@@ -107,8 +111,8 @@ export default function ProductScreen({ route }) {
   }, [barcode]);
   if (!product) {
     return (
-      <View style={styles.MainContainer}>
-        <Text style={styles.Title}>Product not found</Text>
+      <View style={Styles.MainContainer}>
+        <Text style={Styles.Title}>Product not found</Text>
       </View>
     );
   }
@@ -167,64 +171,63 @@ export default function ProductScreen({ route }) {
 
   return (
     <ScrollView
-      style={styles.Page}
-      contentContainerStyle={styles.MainContainer}
+      style={Styles.savedPage}
+      contentContainerStyle={Styles.MainContainer}
     >
       {product.image_front_small_url ? (
         <Image
           source={{ uri: product.image_front_small_url }}
-          style={styles.Image}
+          style={Styles.Image}
         />
       ) : (
         <Image
           source={require("../assets/product-placeholder.jpg")}
-          style={styles.Image}
+          style={Styles.Image}
         />
       )}
-      <Text style={styles.Title}>{(product.product_name ?? "Unknown product").replace(/&quot;|&#039;/g, "'")}</Text>
-      <Text style={styles.Brand}>{product.brands ?? "Unknown brand"}</Text>
-      <View style={styles.ecoContainer}>
+      <Text style={Styles.Title}>{(product.product_name ?? "Unknown product").replace(/&quot;|&#039;/g, "'")}</Text>
+      <Text style={Styles.Brand}>{product.brands ?? "Unknown brand"}</Text>
+      <View style={Styles.ecoContainer}>
         <Text style={[
-            styles.ecoScore,
-            product.eco?.ecoScore <= 30 && styles.ecoScoreLow,
-            product.eco?.ecoScore <= 70 && product.eco?.ecoScore > 30 && styles.ecoScoreMedium,
-            product.eco?.ecoScore > 70 && styles.ecoScoreHigh
+            Styles.productPageEcoScore,
+            product.eco?.ecoScore <= 30 && {color: Colours.high},
+            product.eco?.ecoScore <= 69 && product.eco?.ecoScore > 30 && {color: Colours.medium},
+            product.eco?.ecoScore >= 70 && {color: Colours.low}
             ]}>{product.eco?.ecoScore ?? "-"}</Text>
-        <Text style={styles.ecoScoreLabel}>EcoScore</Text> 
+        <Text style={Styles.ecoScoreLabel}>EcoScore</Text> 
         {confidenceMessage && (
-          <Text style={styles.ecoConfidence}>
+          <Text style={Styles.EcoConfidence}>
             {confidenceMessage}
           </Text>
         )}
         {ecoReason?.map((flag, index) => {
-            const isDisclaimer = 
-            flag.message?.includes("limited") || 
-            flag.message?.includes("estimated");
             return (
-            <Text key={index} style={[
-                styles.ecoReason,
-                flag.impact === "medium" && styles.ecoMedium,
-                flag.impact === "high" && styles.ecoHigh,
-                flag.impact === "low" && !isDisclaimer && styles.ecoLow,
-                isDisclaimer && styles.ecoDisclaimer
-                ]}>
-                {flag.message}
-            </Text>
+              <Text key={index} style={[
+                  Styles.EcoReason,
+                  flag.impact === "medium" && {color: Colours.medium},
+                  flag.impact === "high" && {color: Colours.high},
+                  flag.impact === "low" && {color: Colours.low},
+                  ]}>
+                  {flag.message}
+              </Text>
             )
         })}
       </View>
-      <View style={styles.divider} />
+      <View style={[Styles.divider, {marginTop: 20}]} />
       {hasNutriments && (
         <>
-      <Text style={styles.SectionTitle}>Nutrition Information</Text>
-      <Text style={styles.SectionSubtitle}>per {nutrimentUnit}</Text>
-      <View style={styles.nutritionContainer}>
+      <Text style={Styles.SectionTitle}>Nutrition Information</Text>
+      <Text style={Styles.SectionSubtitle}>per {nutrimentUnit}</Text>
+      <View style={[
+        Styles.nutritionContainer,
+        !hasIngredients ? {marginBottom: 40} : null
+        ]}>
         <NutritionRow
           label="Calories"
           value={nutriments[`energy-kcal${suffix}`]}
           unit="kcal"
         />
-        {nutriments[`energy-kcal${suffix}`] != null && <View style={styles.rowDivider} />}
+        {nutriments[`energy-kcal${suffix}`] != null && <View style={Styles.rowDivider} />}
         <NutritionRow
           label="Fat"
           value={nutriments[`fat${suffix}`]}
@@ -237,7 +240,7 @@ export default function ProductScreen({ route }) {
           unit="g"
           sub
         />
-        {nutriments[`fat${suffix}`] != null && <View style={styles.rowDivider} />}
+        {nutriments[`fat${suffix}`] != null && <View style={Styles.rowDivider} />}
         <NutritionRow
           label="Carbohydrates"
           value={nutriments[`carbohydrates${suffix}`]}
@@ -250,20 +253,20 @@ export default function ProductScreen({ route }) {
           levelType="sugar"
           sub
         />
-        {nutriments[`sugars${suffix}`] != null && <View style={styles.rowDivider} />}
+        {nutriments[`sugars${suffix}`] != null && <View style={Styles.rowDivider} />}
         <NutritionRow
           label="Protein"
           value={nutriments[`proteins${suffix}`]}
           unit="g"
         />
-        {nutriments[`proteins${suffix}`] != null && <View style={styles.rowDivider} />}
+        {nutriments[`proteins${suffix}`] != null && <View style={Styles.rowDivider} />}
         <NutritionRow
           label="Salt"
           value={nutriments[`salt${suffix}`]}
           unit="g"
           levelType="salt"
         />
-        {nutriments[`salt${suffix}`] != null && <View style={styles.rowDivider} />}
+        {nutriments[`fiber${suffix}`] != null && <View style={Styles.rowDivider} />}
         <NutritionRow
           label="Fiber"
           value={nutriments[`fiber${suffix}`]}
@@ -272,11 +275,11 @@ export default function ProductScreen({ route }) {
       </View>
       </>
       )}
-      {hasNutriments && hasIngredients && <View style={styles.divider} />}
+      {hasNutriments && hasIngredients && <View style={Styles.divider} />}
       {hasIngredients && (
         <>
-        <Text style={styles.SectionTitle}>Ingredients</Text>
-        <View style={styles.ingredientsContainer}>
+        <Text style={Styles.SectionTitle}>Ingredients</Text>
+        <View style={Styles.ingredientsContainer}>
             {product.ingredients?.length > 0
             ? product.ingredients.map((ingredient, index) => {
                 const impact = getIngredientImpact(ingredient.text ?? "");
@@ -284,10 +287,10 @@ export default function ProductScreen({ route }) {
                     <View
                     key={index}
                     style={[
-                        styles.ingredientRow,
-                        impact === "low" && styles.ingredientLow,
-                        impact === "medium" && styles.ingredientMedium,
-                        impact === "high" && styles.ingredientHigh,
+                        Styles.ingredientRow,
+                        impact === "low" && {color: Colours.low},
+                        impact === "medium" && {color: Colours.medium},
+                        impact === "high" && {color: Colours.high},
                     ]}
                     >
                     <FontAwesome
@@ -295,21 +298,21 @@ export default function ProductScreen({ route }) {
                         size={16}
                         color={
                         impact === "high"
-                            ? "#FF3B30"
+                            ? Colours.high
                             : impact === "medium"
-                            ? "yellow"
+                            ? Colours.medium
                             : impact === "low"
-                            ? "green"
-                            : "#A0AF84"
+                            ? Colours.low
+                            : Colours.text
                         }
                     />
 
                     <Text
                         style={[
-                        styles.ingredientText,
-                        impact === "low" && styles.ingredientTextLow,
-                        impact === "medium" && styles.ingredientTextMedium,
-                        impact === "high" && styles.ingredientTextHigh,
+                        Styles.ingredientText,
+                        impact === "low" && Styles.ingredientTextLow,
+                        impact === "medium" && Styles.ingredientTextMedium,
+                        impact === "high" && Styles.ingredientTextHigh,
                         ]}
                     >
                         {ingredient.text}
@@ -325,10 +328,10 @@ export default function ProductScreen({ route }) {
                 <View
                 key={index}
                 style={[
-                    styles.ingredientRow,
-                    impact === "low" && styles.ingredientLow,
-                    impact === "medium" && styles.ingredientMedium,
-                    impact === "high" && styles.ingredientHigh,
+                    Styles.ingredientRow,
+                    impact === "low" && Styles.ingredientLow,
+                    impact === "medium" && Styles.ingredientMedium,
+                    impact === "high" && Styles.ingredientHigh,
                 ]}
                 >
                 <FontAwesome
@@ -336,21 +339,21 @@ export default function ProductScreen({ route }) {
                     size={16}
                     color={
                     impact === "high"
-                        ? "#FF3B30"
+                        ? {color: Colours.high}
                         : impact === "medium"
-                        ? "yellow"
+                        ? {color: Colours.medium}
                         : impact === "low"
-                        ? "green"
-                        : "#A0AF84"
+                        ? {color: Colours.low}
+                        : {color: Colours.text}
                     }
                 />
 
                 <Text
                     style={[
-                    styles.ingredientText,
-                    impact === "low" && styles.ingredientTextLow,
-                    impact === "medium" && styles.ingredientTextMedium,
-                    impact === "high" && styles.ingredientTextHigh,
+                    Styles.ingredientText,
+                    impact === "low" && Styles.ingredientTextLow,
+                    impact === "medium" && Styles.ingredientTextMedium,
+                    impact === "high" && Styles.ingredientTextHigh,
                     ]}
                 >
                     {clean}
@@ -364,230 +367,3 @@ export default function ProductScreen({ route }) {
     </ScrollView>
   );
 }
-const styles = StyleSheet.create({
-    Page: {
-        flex: 1,
-        backgroundColor: "#C3B59F",
-    },
-    MainContainer: {
-        alignItems: "center",
-        padding: 20,
-        paddingBottom: 50,
-    },
-    Image: {
-        width: 200,
-        height: 200,
-        marginBottom: 20,
-        borderRadius: 15,
-    },
-    Title: {
-        fontSize: 28,
-        fontWeight: "bold",
-        color: "#215C3D",
-        textAlign: "center",
-        marginBottom: 6,
-    },
-    Brand: {
-        color: "#215C3D",
-        fontSize: 22,
-        fontWeight: "bold",
-        textAlign: "center",
-        marginBottom: 10,
-    },
-    divider: {
-        height: 1,
-        backgroundColor: "#215C3D",
-        width: "100%",
-        marginVertical: 20,
-    },
-    SectionTitle: {
-        color: "#215C3D",
-        fontSize: 26,
-        fontWeight: "bold",
-        textAlign: "center",
-    },
-    SectionSubtitle: {
-        color: "#215C3D",
-        fontSize: 16,
-        marginBottom: 15,
-    },
-    nutritionContainer: {
-        width: "92%",
-        backgroundColor: "#215C3D",
-        borderRadius: 18,
-        padding: 18,
-        shadowColor: "#000",
-        shadowOffset: {
-        width: 5,
-        height: 5,
-        },
-        shadowOpacity: 0.35,
-        shadowRadius: 5,
-        elevation: 5,
-    },
-    nutritionRow: {
-        width: "100%",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingVertical: 9,
-    },
-    subRow: {
-        width: "90%",
-        alignSelf: "flex-end",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingVertical: 5,
-    },
-    nutritionLabel: {
-        color: "#A0AF84",
-        fontSize: 17,
-        fontWeight: "bold",
-        flex: 1,
-    },
-    subLabel: {
-        color: "#A0AF84",
-        fontSize: 15,
-    },
-    rowRight: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 8,
-        minWidth: 90,
-        justifyContent: "flex-end",
-    },
-    nutritionValue: {
-        color: "#A0AF84",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    levelContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 5,
-    },
-    levelText: {
-        color: "#A0AF84",
-        fontSize: 14,
-        fontWeight: "bold",
-    },
-    rowDivider: {
-        height: 1,
-        backgroundColor: "#727e5aff",
-        marginVertical: 5,
-    },
-    ecoContainer: {
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 5,
-        backgroundColor: "#215C3D",
-        borderRadius: 10,
-        padding: 10,
-        width: "92%",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 5,
-            height: 5
-        },
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-        elevation: 5,
-    },
-    ecoScore: {
-        color: "#A0AF84",
-        fontSize: 26,
-        fontWeight: "bold",
-    },
-    ecoScoreLabel: {
-        color: "#A0AF84",
-        fontSize: 14,
-        fontWeight: "bold",
-        textAlign: "center",
-        marginBottom: 5,
-    },
-    ecoReason: {
-        color: "#A0AF84",
-        fontSize: 16,
-        fontWeight: "bold",
-        textAlign: "center",
-    },
-    ecoConfidence: {
-      color: "#A0AF84",
-      fontSize: 13,
-      opacity: 0.8,
-      marginTop: 2,
-      marginBottom: 4,
-    },
-    ecoDisclaimer: {
-      color: "#A0AF84",
-      opacity: 0.7,
-      fontSize: 14,
-      marginTop: 6,
-    },
-    ecoLow: {
-      color: "#A0AF84",
-      opacity: 0.75,
-      fontSize: 14,
-    },
-    ecoMedium: {
-        color: "yellow"
-    },
-    ecoHigh: {
-        color: "#FF3B30"
-    },
-    ecoScoreLow: {
-        color: "#FF3B30"
-    },
-    ecoScoreMedium: {
-        color: "yellow"
-    },
-    ecoScoreHigh: {
-        color: "green"
-    },
-    ingredientsContainer: {
-        width: "92%",
-        backgroundColor: "#215C3D",
-        borderRadius: 18,
-        padding: 18,
-        marginTop: 20,
-
-        shadowColor: "#000",
-        shadowOffset: {
-        width: 5,
-        height: 5,
-        },
-        shadowOpacity: 0.35,
-        shadowRadius: 5,
-        elevation: 5,
-    },
-    ingredient: {
-        color: "#A0AF84",
-        fontSize: 16,
-        textAlign: "center",
-        marginBottom: 5
-    },
-    ingredientRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 8,
-        marginBottom: 8,
-        },
-    ingredientText: {
-        color: "#A0AF84",
-        fontSize: 16,
-        flex: 1,
-    },
-    ingredientTextLow: {
-        color: "green",
-        fontWeight: "bold",
-    },
-    ingredientTextMedium: {
-        color: "yellow",
-        fontWeight: "bold",
-    },
-    ingredientTextHigh: {
-        color: "#FF3B30",
-        fontWeight: "bold",
-    },
-});

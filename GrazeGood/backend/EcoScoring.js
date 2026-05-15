@@ -13,7 +13,8 @@ function calculateEcoScore(product) {
     }
     const missing = [];
     const redFlags = [];
-    let redFlag = false;
+    let ethicalPenalty = 0;
+    let sustainabilityBonus = 0;
 
     function formatPackagingTag(tag) {
         if (!tag) return "";
@@ -39,44 +40,101 @@ function calculateEcoScore(product) {
     }
 
     //boycott check
-    const boycottList = [
-        "nestle",
-        "mondelez international",
-        "mondelez",
-        "sabra",
-        "mars",
+    const ethicalFlags = {
+    nestle: {
+        severity: "high",
+        reasons: [
+        "water extraction controversies",
+        "supply chain labour concerns",
+        ],
+    },
 
-        "shell",
-        "bp",
-        "exxonmobil",
-        "chevron",
-        "total",
-        "totalenergies",
+    mondelez: {
+        severity: "medium",
+        reasons: [
+        "palm oil and cocoa supply chain concerns",
+        ],
+    },
 
-        "monsanto",
-        "bayer",
-        "cargill"
-    ]
+    mars: {
+        severity: "medium",
+        reasons: [
+        "cocoa supply chain concerns",
+        "high-impact processed food production",
+        ],
+    },
+
+    sabra: {
+        severity: "high",
+        reasons: [
+        "boycott list concern",
+        ],
+    },
+
+    cargill: {
+        severity: "high",
+        reasons: [
+        "deforestation-linked supply chain concerns",
+        "industrial agriculture concerns",
+        ],
+    },
+
+    bayer: {
+        severity: "medium",
+        reasons: [
+        "pesticide and agricultural chemical concerns",
+        ],
+    },
+
+    pepsico: {
+        severity: "medium",
+        reasons: [
+        "plastic pollution concerns",
+        "processed food supply chain concerns",
+        ],
+    },
+
+    cocaCola: {
+        matchNames: ["coca-cola", "coca cola"],
+        severity: "medium",
+        reasons: [
+        "plastic pollution concerns",
+        "water usage concerns",
+        ],
+    },
+    };
     if (product.brands) {
-        const brands = product.brands
-            .toLowerCase()
-            .split(",")
-            .map(b => b.trim());
+    const brands = product.brands
+        .toLowerCase()
+        .split(",")
+        .map(b => b.trim());
 
-        const matchedBrand = brands.find(brand =>
-            boycottList.some(b => brand.includes(b))
+    brands.forEach(brand => {
+        Object.entries(ethicalFlags).forEach(([key, flag]) => {
+        const namesToMatch = flag.matchNames ?? [key];
+
+        const matched = namesToMatch.some(name =>
+            brand.includes(name.toLowerCase())
         );
 
-        if (matchedBrand) {
+        if (matched) {
             redFlags.push({
-                impact: `high`,
-                message: `Company is on boycott list: ${matchedBrand}`
+            impact: flag.severity,
+            message: `${brand} has ethical concerns: ${flag.reasons.join(", ")}`
             });
-            redFlag = true;
-            
-        }  
+
+            if (flag.severity === "high") {
+            ethicalPenalty += 25
+            } else if(flag.severity === "medium") {
+                ethicalPenalty += 12
+            } else {
+                ethicalPenalty += 5
+            }
+        }
+        });
+    });
     } else {
-        missing.push("brands");
+    missing.push("brands");
     }
 
     //packaging
@@ -105,7 +163,11 @@ function calculateEcoScore(product) {
         compostable: 16,
         cork: 15,
         reusable: 20,
-        refill: 19
+        refill: 19,
+        tetrapak: 8,
+        bioplastic: 10,
+        glassbottle: 14,
+        aluminiumcan: 12,
     };
     if (product.packaging_tags?.length > 0) {
         Object.entries(packagingScores).forEach(([material, value]) => {
@@ -165,7 +227,18 @@ function calculateEcoScore(product) {
 
         "china": 30,
         "japan": 30,
-        "india": 30
+        "india": 30,
+        "israel": 20,
+
+        "brazil": 35,
+        "argentina": 40,
+        "australia": 50,
+        "new zealand": 55,
+        "thailand": 35,
+        "vietnam": 35,
+        "indonesia": 25,
+        "malaysia": 30,
+        "mexico": 45,
     };
 
     if (product.manufacturing_places) {
@@ -177,11 +250,11 @@ function calculateEcoScore(product) {
         places.forEach(place => {
             const cleanPlace = place.trim();
 
-            if (locationScores[cleanPlace]) {
+            if (locationScores[cleanPlace] != null) {
                 manufacturingScore += locationScores[cleanPlace];
                 placesFound++;
                 if (cleanPlace == "israel") {
-                    redFlag = true;
+                    ethicalPenalty += 25
                     redFlags.push({
                         impact: `high`,
                         message: `product has ties to Israel so is currently boycotted`
@@ -221,6 +294,7 @@ function calculateEcoScore(product) {
         ham: 30,
         chicken: 50,
         turkey: 50,
+        duck: 35,
 
         milk: 50,
         butter: 30,
@@ -234,6 +308,7 @@ function calculateEcoScore(product) {
         "palm fat": 0,
         "palm kernel oil": 0,
         "palm kernel fat": 0,
+
 
         soy: 50,
         soya: 50,
@@ -249,14 +324,30 @@ function calculateEcoScore(product) {
         "high fructose corn syrup": 30,
         "invert sugar": 45,
         maltodextrin: 40,
+        gelatin: 25,
+        gelatine: 25,
+        "hydrogenated oil": 15,
+        "shortening": 20,
+        "corn syrup": 30,
+        "artificial sweetener": 45,
+        aspartame: 40,
+        sucralose: 40,
+        acesulfame: 40,
 
         tuna: 40,
         salmon: 45,
         anchovy: 50,
         shrimp: 35,
         prawn: 35,
+        cod: 45,
+        crab: 35,
+        lobster: 25,
 
         almond: 45,
+        avocado: 55,
+        cashew: 40,
+        "coconut oil": 35,
+        rice: 55,
 
         coffee: 45,
         cocoa: 40,
@@ -268,7 +359,22 @@ function calculateEcoScore(product) {
         flavouring: 70,
         colouring: 70,
         "artificial flavour": 65,
-        "artificial colour": 65
+        "artificial colour": 65,
+
+        //Positives
+        lentils: 90,
+        beans: 85,
+        peas: 85,
+        oats: 90,
+        chickpeas: 90,
+        tofu: 85,
+        quinoa: 80,
+        barley: 85,
+        flaxseed: 90,
+        linseed: 90,
+        "wholegrain oats": 95,
+        mushrooms: 90,
+        seaweed: 85,
     };
 
     let ingredientScore = 0;
@@ -284,15 +390,18 @@ function calculateEcoScore(product) {
 
                 ingredientScore += value;
                 ingredientsFound++;
-                if (ingredient == "palm oil" || ingredient=="palm fat") {
-                    redFlag = true;
-                    redFlags.push({
-                        impact: `high`,
-                        message: `Palm Oil is incredibly bad for both the environment and you`
-                    })
-                }
-
-                if (value <= 20) {
+                if (
+                ingredient === "palm oil" ||
+                ingredient === "palm fat" ||
+                ingredient === "palm kernel oil" ||
+                ingredient === "palm kernel fat"
+                ) {
+                ethicalPenalty += 25;
+                redFlags.push({
+                    impact: "high",
+                    message: "Palm oil detected — linked to deforestation and habitat loss"
+                });
+                } else if (value <= 20) {
                     redFlags.push({
                         impact: 'high',
                         message: `High-impact ingredient detected: ${ingredient}`
@@ -323,28 +432,182 @@ function calculateEcoScore(product) {
         missing.push("ingredients_text");
     }
 
+    const searchableText = [
+        product.ingredients_text,
+        ...(product.categories_tags || []),
+        ...(product.labels_tags || []),
+        ...(product.packaging_tags || [])
+    ]
+    .join(" ")
+    .toLowerCase();
+
+    const sustainabilityBonuses = {
+        organic: {
+            bonus: 8,
+            message: "Organic ingredients detected"
+        },
+
+        vegan: {
+            bonus: 12,
+            message: "Plant-based product"
+        },
+
+        vegetarian: {
+            bonus: 6,
+            message: "Vegetarian product"
+        },
+
+        "fair trade": {
+            bonus: 10,
+            message: "Fair Trade certified"
+        },
+
+        recyclable: {
+            bonus: 5,
+            message: "Recyclable packaging"
+        },
+
+        compostable: {
+            bonus: 8,
+            message: "Compostable packaging"
+        },
+
+        local: {
+            bonus: 6,
+            message: "Locally sourced product"
+        },
+
+        seasonal: {
+            bonus: 5,
+            message: "Seasonal ingredients"
+        },
+
+        "rainforest alliance": {
+            bonus: 6,
+            message: "Rainforest Alliance certified"
+        },
+
+        "fsc": {
+            bonus: 4,
+            message: "Sustainably sourced paper/card packaging"
+        },
+
+        "msc": {
+            bonus: 7,
+            message: "Sustainably sourced seafood"
+        },
+
+        "asc": {
+            bonus: 6,
+            message: "Responsibly farmed seafood"
+        },
+
+        "carbon neutral": {
+            bonus: 10,
+            message: "Carbon neutral certified"
+        },
+
+        "b corporation": {
+            bonus: 6,
+            message: "Certified B Corporation"
+        },
+
+        "b corp": {
+            bonus: 6,
+            message: "Certified B Corporation"
+        },
+
+        refill: {
+            bonus: 7,
+            message: "Refillable packaging"
+        },
+
+        reusable: {
+            bonus: 6,
+            message: "Reusable packaging"
+        },
+
+        "plastic free": {
+            bonus: 10,
+            message: "Plastic-free packaging"
+        },
+
+        "palm oil free": {
+            bonus: 12,
+            message: "Palm oil free"
+        }
+    };
+    if (Number(product.nova_group) === 1) {
+        sustainabilityBonus += 10;
+
+        redFlags.push({
+            impact: "low",
+            message: "Minimally processed food"
+        });
+    }
+
+    const searchableItems = [
+        ...(product.categories_tags || []),
+        ...(product.labels_tags || []),
+        ...(product.packaging_tags || []),
+    ]
+    .map(item =>
+        String(item)
+            .toLowerCase()
+            .replace(/^en:/, "")
+            .trim()
+    );
+
+    const addedMessages = new Set();
+
+    Object.entries(sustainabilityBonuses).forEach(([term, data]) => {
+
+        const normalisedTerm = term.toLowerCase();
+
+        const matched =
+            searchableText.includes(normalisedTerm) ||
+            searchableItems.some(item => item === normalisedTerm);
+
+        if (matched) {
+            sustainabilityBonus += data.bonus;
+
+            if (!addedMessages.has(data.message)) {
+                redFlags.push({
+                    impact: "low",
+                    message: data.message
+                });
+
+                addedMessages.add(data.message);
+            }
+        }
+    });
+    sustainabilityBonus = Math.min(sustainabilityBonus, 20);
+
     let finalScore = weightTotal > 0
         ? Math.round((score / weightTotal) * 100)
         : null;
     
     if (weightTotal === 0) {
         return {
-            ecoScore: redFlag ? 0 : 40,
+            ecoScore: Math.max(0, Math.min(100, 40 - ethicalPenalty + sustainabilityBonus)),
             confidence: 0,
+            ethicalPenalty,
+            sustainabilityBonus,
             missingVariables: missing,
             ecoReason: redFlags
         };
     }
 
-    finalScore = Math.max(0, Math.min(100, finalScore));
-
-    if (redFlag) {
-        finalScore = 0;
-    }
+    finalScore = Math.max(
+        0,
+        Math.min(100, finalScore - ethicalPenalty + sustainabilityBonus)
+    );
 
     return {
         ecoScore: finalScore,
         confidence: Math.round(weightTotal),
+        ethicalPenalty,
+        sustainabilityBonus,
         missingVariables: missing,
         ecoReason: redFlags
     };

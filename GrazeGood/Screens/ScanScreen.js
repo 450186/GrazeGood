@@ -159,7 +159,7 @@ function GetEcoIndicator(score) {
   if(score <=70 && score > 30) {
     return (
       <Text>
-        <FontAwesome name='dot-circle-o' size={24} color='yellow'/>
+        <FontAwesome name='dot-circle-o' size={24} color= {Colours.medium}/>
       </Text>
     )
   }
@@ -469,21 +469,28 @@ async function fetchProduct(productCode) {
       {loading && <ActivityIndicator />}
       {error && <Text style={{color: 'red'}}>{error}</Text>}
       {product ? (
-        <>
+        <ScrollView
+          style={{flex: 1, width: "100%"}}
+          contentContainerStyle={{
+            alignItems: "center",
+            paddingBottom: 40
+          }}
+          showsVerticalScrollIndicator={false}
+        >
         <TouchableOpacity
         activeOpacity={0.8}
-        style={{width: "75%", margin: "auto"}}
+        style={{width: "85%", margin: "auto"}}
         onPress={() => {
           navigation.navigate("Product", { barcode: lastBarcode });
         }}
         >
         <View style={Styles.ScannedInfo}>
           <Text style={Styles.ProductHead}>
-            Product Name: {(product.product_name ?? "Unknown").replace(/&quot;|&#039;/g, "'")}
+            {(product.product_name ?? "Unknown").replace(/&quot;|&#039;/g, "'")}
           </Text>
 
           <Text style={[Styles.ProductHead, {marginBottom: 10}]}>
-            Brand: {product.brands ?? "Unknown"}
+            {product.brands ?? "Unknown"}
           </Text>
 
           {ecoScore !== null && (
@@ -538,7 +545,7 @@ async function fetchProduct(productCode) {
           </TouchableOpacity>
         </View>
         </TouchableOpacity>
-        </>
+        </ScrollView>
       ) : null}
       {/* </ScrollView> */}
     </View>

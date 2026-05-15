@@ -116,7 +116,7 @@ export default function SavedScreen({ navigation }) {
                 )}
                 <View style={Styles.savedProductInfo}>
                   <Text style={{ fontSize: 16, fontWeight: "bold", color: Colours.text }}>
-                    {item.product_name ?? "Unknown Product"}
+                    {item.product_name.replace("&quot;", "'") ?? "Unknown Product"}
                   </Text>
                   <Text style={{color: Colours.text, fontSize: 15, fontWeight: "bold", marginTop: 10}}>{item.brands}</Text>
                   <View style={Styles.divider}></View>
