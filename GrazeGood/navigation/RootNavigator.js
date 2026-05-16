@@ -90,7 +90,9 @@ export default function RootNavigator() {
           <Stack.Screen name="Login">
             {(props) => <LoginScreen {...props} setUser={setUser} />}
           </Stack.Screen>
-          <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="Register">
+            {(props) => <RegisterScreen {...props} setUser={setUser} />}
+          </Stack.Screen>
         </>
       )}
     </Stack.Navigator>

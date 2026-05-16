@@ -216,7 +216,7 @@ export default StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 50
+        marginTop: 100
     },
     Button: {
         backgroundColor: Colours.button,
@@ -499,6 +499,118 @@ export default StyleSheet.create({
         width: 30,
         height: 30,
         borderRadius: 20,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    PremiumIcon: {
+        color: "#FFD725",
+        width: 110,
+        height: 110,
+        position: "absolute",
+        top: 15,
+        right: 0
+    },
+    PremiumContainer: {
+        width: "92%",
+        backgroundColor: Colours.cards,
+        padding: 10,
+        margin: 10,
+        borderRadius: 10,
+
+        shadowColor: "#414040ff",
+        shadowOffset: {
+        width: 1,
+        height: 1
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    DateContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 5,
+        width: "100%",
+    },
+    MemberSinceText: {
+        color: Colours.text,
+        fontSize: 16,
+        textAlign: "center",
+        marginBottom: 5,
+        fontWeight: "bold"
+    },
+    PremiumDate: {
+        color: Colours.text,
+        fontSize: 16,
+        textAlign: "center",
+        marginBottom: 5
+    },
+      switchContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        marginVertical: 20,
+
+    },
+    switchLabel: {
+        marginRight: 10,
+        fontSize: 16,
+        color: Colours.text
+    },
+    benefitsContainer: {
+        marginVertical: 20,
+        alignItems: "flex-start",
+        fontSize: 14
+    },
+    benefit: {
+        color: Colours.text,
+        fontSize: 18,
+        marginBottom: 5,
+        backgroundColor: Colours.accent,
+        padding: 10,
+        borderRadius: 25
+    },
+    buyPremiumButton: {
+        backgroundColor: Colours.button,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        marginVertical: 10
+    },
+    buyPremiumText: {
+        color: "white",
+        fontWeight: "bold",
+        fontSize: 16
+    },
+    input: {
+        width: 200,
+        alignSelf: "center",
+        height: 40,
+        margin: 12,
+        borderWidth: 1,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 10,
+        backgroundColor: Colours.accent,
+    },
+    InputContainer: {
+        borderRadius: 10,
+        padding: 20,
+        backgroundColor: Colours.cards,
+        width: "92%",
+        alignSelf: "center",
+        marginTop: 20,
+
+        shadowColor: "#414040ff",
+        shadowOffset: {
+        width: 1,
+        height: 1
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 2,
+
         justifyContent: "center",
         alignItems: "center",
     }

@@ -1,8 +1,12 @@
 import React from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function RegisterScreen( { navigation } ) {
+import Colours from "../styles/colours.js"
+import Styles from "../styles/styles.js"
+
+export default function RegisterScreen( { navigation, setUser } ) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -37,9 +41,10 @@ export default function RegisterScreen( { navigation } ) {
       const data = await res.json();
 
       if (res.ok) {
-        Alert.alert("Success", "Registration successful", [
-          { text: "Continue", onPress: () => navigation.navigate("Login") }
-        ]);
+        const savedUser = await AsyncStorage.setItem("username", data.user.username);
+        if(savedUser) {
+          setUser(data.user.username);
+        }
       } else {
         Alert.alert("Error", data?.error ?? "Registration failed");
       }
@@ -51,12 +56,12 @@ export default function RegisterScreen( { navigation } ) {
     }
   }
   return (
-    <View style={styles.container}>
+    <View style={Styles.StaticPage}>
 
-    <View style={styles.InputContainer}>
-      <Text style={styles.title}>Enter Your Details</Text>
+    <View style={Styles.InputContainer}>
+      <Text style={Styles.Title}>Enter Your Details</Text>
       <TextInput
-      style={styles.input}
+      style={Styles.input}
       placeholder="Enter Username"
       value={username}
       onChangeText={setUsername}
@@ -64,21 +69,21 @@ export default function RegisterScreen( { navigation } ) {
       />
 
       <TextInput
-      style={styles.input}
+      style={Styles.input}
       placeholder="Enter First Name"
       value={firstName}
       onChangeText={setFirstName}
       />
 
       <TextInput
-      style={styles.input}
+      style={Styles.input}
       placeholder="Enter Last Name"
       value={lastName}
       onChangeText={setLastName}
       />
 
       <TextInput
-      style={styles.input}
+      style={Styles.input}
       placeholder="Enter Email"
       value={email}
       onChangeText={setEmail}
@@ -86,7 +91,7 @@ export default function RegisterScreen( { navigation } ) {
       />
 
       <TextInput
-      style={styles.input}
+      style={Styles.input}
       placeholder="Enter Password"
       value={password}
       onChangeText={setPassword}
@@ -94,22 +99,22 @@ export default function RegisterScreen( { navigation } ) {
       />
 
       <TouchableOpacity
-      style={styles.registerBtn}
+      style={Styles.Button}
       onPress={handleRegister}
       >
-        <Text style={styles.buttonText}>Register</Text>
+        <Text style={Styles.ButtonText}>Register</Text>
       </TouchableOpacity>
       </View>
       <Text 
-      style={{ color: "#2D4739", fontSize: 18, fontWeight: "bold", marginTop: 20 }}
+      style={{ color: Colours.text, fontSize: 18, fontWeight: "bold", marginTop: 20, alignSelf: "center" }}
       >
         Already Have an Account?
       </Text>
       <TouchableOpacity
-      style={styles.registerBtn}
+      style={[Styles.Button, { width: "40%", alignSelf: "center" }]}
       onPress={() => navigation.navigate("Login")}
       >
-        <Text style={styles.buttonText}>Login</Text>
+        <Text style={Styles.ButtonText}>Login</Text>
       </TouchableOpacity>
     </View>
   );

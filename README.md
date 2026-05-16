@@ -44,7 +44,10 @@ GrazeGood
 │  │  ├─ RootNavigator.js
 │  │  └─ TabNavigator.js
 │  ├─ package-lock.json
-│  └─ package.json
+│  ├─ package.json
+│  └─ styles
+│     ├─ colours.js
+│     └─ styles.js
 └─ README.md
 
 ```

@@ -182,11 +182,9 @@ async function handlePremiumRenewal(user) {
   const now = new Date();
 
   if(user.premiumEnd <= now) {
-    const newStart = new Date(user.premiumEnd);
     const newEnd = new Date(user.premiumEnd);
     newEnd.setMonth(newEnd.getMonth() + 1);
 
-    user.premiumStart = newStart;
     user.premiumEnd = newEnd;
 
     await user.save();

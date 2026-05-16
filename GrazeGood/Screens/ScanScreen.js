@@ -21,9 +21,10 @@ export default function ScanScreen( { navigation } ) {
   const [ecoReason, setEcoReason] = useState(null);
 
   const [scansLeft, setScansLeft] = useState(null);
-  const [isPremium, setIsPremium] = useState(false);
+  const [isPremium, setIsPremium] = useState(null);
   const [adsLeft, setAdsLeft] = useState(5);
   const [canScan, setCanScan] = useState(true);
+  const [scanDataLoading, setScanDataLoading] = useState(true);
 
   const [lastBarcode, setLastBarcode] = useState(null);
   const [savedBy, setSavedBy] = useState(null);
@@ -36,7 +37,11 @@ useEffect(() => {
   (async () => {
     const username = await AsyncStorage.getItem("username");
     setSavedBy(username);
-    if (!username) return;
+    if (!username) {
+      setScanDataLoading(false);
+      setIsPremium(false);
+      return;
+    };
 
     loadScanData(username);
   })();
@@ -46,18 +51,21 @@ useEffect(() => {
 
   async function loadScanData(username) {
     try {
+      setScanDataLoading(true);
       const res = await fetch(`${API_BASE}/user/${username}/scans`);
       const data = await res.json();
 
       if (res.ok) {
         setScansLeft(data.scanCredits);
         setIsPremium(data.isPremium);
-        setAdsLeft(5 - data.adsWatchedToday?? 0);
+        setAdsLeft(5 - (data.adsWatchedToday ?? 0));
       } else {
         console.log("Error loading scans:", data?.error);
       }
     } catch (e) {
       console.error("Error getting scans:", e);
+    } finally {
+      setScanDataLoading(false);
     }
   }
   async function pingAPI() {
@@ -188,7 +196,7 @@ async function rewardScans() {
     if(rewardRes.ok) {
       setScansLeft(rewardData.scanCredits)
       setIsPremium(rewardData.isPremium)
-      setAdsLeft(5 - rewardData.adsWatchedToday?? 0)
+      setAdsLeft(5 - (rewardData.adsWatchedToday ?? 0))
       
       Toast.show({
         type: "success",
@@ -306,6 +314,13 @@ async function fetchProduct(productCode) {
       </View>
     )
   }
+    if (scanDataLoading || isPremium === null) {
+      return (
+        <View style={Styles.StaticPage}>
+          <ActivityIndicator size="large" color={Colours.text} />
+        </View>
+      );
+    }
   return (
     <View style={Styles.StaticPage}>
       <StatusBar style="auto" />
@@ -394,8 +409,8 @@ async function fetchProduct(productCode) {
             <Text style={Styles.text}>
               The higher the eco score, the better for you and the environment!
             </Text>
-            <Text style={Styles.text}>
-              To start scanning, click the button below
+            <Text style={[Styles.text, {textAlign: "left"}]}>
+              To start scanning, Open the scanner
             </Text>
             {!isPremium && (
               <>
@@ -403,8 +418,14 @@ async function fetchProduct(productCode) {
                   Please Note, you get 5 scans per day and need to watch ads to get more
                 </Text>
                 <Text style={[Styles.text, styles.lastText]}>
-                  Buy premium to get unlimited scans <TouchableOpacity onPress={() => navigation.navigate("Premium")}><Text style={styles.premiumNav}>here</Text></TouchableOpacity>
+                  Buy premium to get unlimited scans and remove ads
                 </Text>
+                <TouchableOpacity
+                  style={Styles.buyPremiumButton}
+                  onPress={() => navigation.navigate("Profile")}
+                >
+                  <Text style={Styles.buyPremiumText}>Buy Premium</Text>
+                </TouchableOpacity>
             </>
             )}
           </View>
@@ -466,8 +487,8 @@ async function fetchProduct(productCode) {
       </>
     )}
 
-      {loading && <ActivityIndicator />}
       {error && <Text style={{color: 'red'}}>{error}</Text>}
+      {loading && <ActivityIndicator size="large" color={Colours.text} />}
       {product ? (
         <ScrollView
           style={{flex: 1, width: "100%"}}
@@ -619,7 +640,7 @@ const styles = StyleSheet.create({
   },
   watchAdsBtn: {
     padding: 5,
-    backgroundColor: "#108A2C",
+    backgroundColor: Colours.button,
     borderRadius: 10,
     marginTop: 10,
     marginVertical: 10,

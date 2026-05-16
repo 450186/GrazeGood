@@ -88,6 +88,13 @@ useEffect(() => {
         <View style={Styles.NoProducts}>
           <Text style={Styles.falseText}>No saved Products</Text>
           <Text style={Styles.falseText}>Scan a product to save it</Text>
+          <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => navigation.navigate("Scan")}
+          style={Styles.Button}
+          >
+            <Text style={Styles.ButtonText}>Start Scanning</Text>
+          </TouchableOpacity>
         </View>
         </View>
       ) : (

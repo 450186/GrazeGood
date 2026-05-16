@@ -130,7 +130,7 @@ export default function SavedScreen({ navigation }) {
         ListEmptyComponent={() => (
           <View style={styles.emptyContainer}>
             <Text style={styles.falseText}>No saved products</Text>
-            <Text>Pull down to refresh</Text>
+            <Text style={Styles.text}>Pull down to refresh</Text>
           </View>
         )}
       />
