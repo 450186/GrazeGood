@@ -87,10 +87,44 @@ export default function RootNavigator() {
         </>
       ) : (
         <>
-          <Stack.Screen name="Login">
+          <Stack.Screen
+          options={{
+            headerTitle: () => {
+              return (
+                <View style={Styles.logoContainer}>
+                  <Image
+                    source={require("../assets/GrazeLogo.png")}
+                    style={Styles.logo}
+                  />
+                  <Text style={Styles.Grazegood}>
+                    GrazeGood
+                  </Text>
+                </View>
+              )
+            },
+            headerBackVisible: false
+          }}
+          name="Login">
             {(props) => <LoginScreen {...props} setUser={setUser} />}
           </Stack.Screen>
-          <Stack.Screen name="Register">
+          <Stack.Screen
+          options={{
+            headerTitle: () => {
+              return (
+                <View style={Styles.logoContainer}>
+                  <Image
+                    source={require("../assets/GrazeLogo.png")}
+                    style={Styles.logo}
+                  />
+                  <Text style={Styles.Grazegood}>
+                    GrazeGood
+                  </Text>
+                </View>
+              )
+            },
+            headerBackVisible: false
+          }}
+          name="Register">
             {(props) => <RegisterScreen {...props} setUser={setUser} />}
           </Stack.Screen>
         </>

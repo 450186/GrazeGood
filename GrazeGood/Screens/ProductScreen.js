@@ -315,7 +315,7 @@ export default function ProductScreen({ route }) {
                         impact === "high" && Styles.ingredientTextHigh,
                         ]}
                     >
-                        {ingredient.text}
+                        {ingredient.text.replace(/_/g, " ").replace(/\s+/g, " ").trim()}
                     </Text>
                     </View>
                 );

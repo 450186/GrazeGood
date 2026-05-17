@@ -1,11 +1,13 @@
 import React from "react";
-import { View, Text, TextInput, Alert, ActivityIndicator, TouchableOpacity } from "react-native";
+import { View, Image, Text, TextInput, Alert, ActivityIndicator, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard } from "react-native";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Animated, {
   LinearTransition,
-  SlideInRight,
-  SlideOutLeft
+  FadeInLeft,
+  FadeOutLeft,
+  FadeOutRight,
+  FadeInRight
 } from 'react-native-reanimated';
 
 import Colours from "../styles/colours.js"
@@ -19,12 +21,15 @@ export default function RegisterScreen( { navigation, setUser } ) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(0);
+  const [direction, setDirection] = useState(1);
 
   const nextStep = () => {
     if (!canContinue()) return;
+    setDirection(1);
     setStep((prev) => prev + 1);
   }
   const prevStep = () => {
+    setDirection(-1);
     setStep((prev) => prev - 1);
   }
 
@@ -95,9 +100,10 @@ export default function RegisterScreen( { navigation, setUser } ) {
   if (step === 0) {
     return (
       <>
+
         <Text style={[Styles.Title, { marginBottom: 0 }]}>Welcome to GrazeGood</Text>
         <View style={Styles.divider} />
-        <Text style={[Styles.welcomeText, { fontWeight: "bold" }]}>
+        <Text style={[Styles.welcomeText, { fontWeight: "bold", fontSize: 20 }]}>
           Positive Environment, Positive Life
         </Text>
         <Text style={Styles.welcomeText}>Scan Products</Text>
@@ -174,12 +180,25 @@ export default function RegisterScreen( { navigation, setUser } ) {
   }
 }
   return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{flex: 1}}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={[Styles.StaticPage, { justifyContent: "center"}]}>
         <Animated.View
           key={step}
           layout={LinearTransition.springify()}
-          entering={SlideInRight.duration(400)}
-          exiting={SlideOutLeft.duration(300)}
+          entering={
+            direction === 1
+            ? FadeInRight.duration(400)
+            : FadeInLeft.duration(400)
+          }
+          exiting={
+            direction === 1
+            ? FadeOutLeft.duration(300)
+            : FadeOutRight.duration(300)
+          }
           style={{width: "100%, alignItems: center"}}
         >
       <View style={Styles.InputContainer}>
@@ -218,5 +237,7 @@ export default function RegisterScreen( { navigation, setUser } ) {
       </TouchableOpacity>
     </Animated.View>
     </View>
+  </TouchableWithoutFeedback>
+  </KeyboardAvoidingView>
   );
 }

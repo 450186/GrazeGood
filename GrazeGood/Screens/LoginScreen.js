@@ -6,7 +6,11 @@ import {
   Button,
   Alert,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -57,46 +61,57 @@ export default function LoginScreen({ navigation, setUser }) {
     }
   }
 
-  return (
-    <View style={[Styles.StaticPage, { justifyContent: "center" }]}>
+return (
+  <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    keyboardVerticalOffset={80}
+  >
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={[Styles.StaticPage, { justifyContent: "center" }]}>
+        <View style={Styles.InputContainer}>
+          <TextInput
+            style={Styles.input}
+            placeholder="Username"
+            value={username}
+            onChangeText={setUsernameLocal}
+            autoCapitalize="none"
+            returnKeyType="next"
+          />
 
-    <View style={Styles.InputContainer}>
-        <TextInput
-          style={Styles.input}
-          placeholder="Username"
-          value={username}
-          onChangeText={setUsernameLocal}
-          autoCapitalize="none"
-        />
+          <TextInput
+            style={Styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            returnKeyType="done"
+            onSubmitEditing={Keyboard.dismiss}
+          />
 
-        <TextInput
-          style={Styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+          <TouchableOpacity style={Styles.Button} onPress={handleLogin}>
+            <Text style={Styles.ButtonText}>
+              {loading ? "Loading..." : "Login"}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity
-          style={Styles.Button}
-          onPress={handleLogin}
-        >
-          <Text style={Styles.ButtonText}>{loading ? "Loading..." : "Login"}</Text>
-        </TouchableOpacity>
+        <View style={{ marginTop: 12 }}>
+          <Text style={{ color: Colours.text, fontSize: 18, fontWeight: "bold", alignSelf: "center" }}>
+            Don't have an account?
+          </Text>
+
+          <TouchableOpacity
+            style={[Styles.Button, { width: "30%", alignSelf: "center" }]}
+            onPress={() => navigation.navigate("Register")}
+          >
+            <Text style={Styles.ButtonText}>Register</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-
-      <View style={{ marginTop: 12 }}>
-      <Text style={{ color: Colours.text, fontSize: 18, fontWeight: "bold", alignSelf: "center" }}>Don't have an account?</Text>
-
-      <TouchableOpacity
-        style={[Styles.Button, {width: "30%", alignSelf: "center"}]}
-        onPress= { () => navigation.navigate("Register") }
-      >
-        <Text style={Styles.ButtonText}>Register</Text>
-      </TouchableOpacity>
-      </View>
-    </View>
-  );
+    </TouchableWithoutFeedback>
+  </KeyboardAvoidingView>
+);
 }
 
 const styles = StyleSheet.create({
