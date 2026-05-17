@@ -643,7 +643,6 @@ export default StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         marginVertical: 20,
-        
     },
     infoIcon: {
         marginRight: 10

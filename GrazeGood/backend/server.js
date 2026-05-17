@@ -622,11 +622,11 @@ app.get("/debug/find-potw-candidates", async (_req, res) => {
   try {
     const searchUrl =
       "https://world.openfoodfacts.org/cgi/search.pl" +
-      "?search_terms=no added sugar" +
+      "?search_terms=organic" +
       "&search_simple=1" +
       "&action=process" +
       "&json=1" +
-      "&page_size=30" +
+      "&page_size=100" +
       "&tagtype_0=countries&tag_contains_0=contains&tag_0=united-kingdom" +
       "&fields=code,product_name,brands,image_front_small_url,nutriments,ingredients_text,ingredients,packaging_tags,countries_tags,manufacturing_places,categories_tags,additives_tags,nova_group";
 
@@ -659,9 +659,19 @@ app.get("/debug/find-potw-candidates", async (_req, res) => {
         p.product_name &&
         p.eco?.ecoScore != null &&
         p.eco.ecoScore >= 70 &&
+        p.eco.confidence >= 40 &&
+        (p.eco.ethicalPenalty ?? 0) < 25 &&
         !p.eco.ecoReason?.some((r) => r.impact === "high")
       )
-      .sort((a, b) => b.eco.ecoScore - a.eco.ecoScore);
+      .sort((a, b) => {
+        const scoreA =
+          a.eco.ecoScore + (a.eco.confidence * 0.1);
+
+        const scoreB =
+          b.eco.ecoScore + (b.eco.confidence * 0.1);
+
+        return scoreB - scoreA;
+      });
 
     res.json(candidates);
   } catch (e) {
