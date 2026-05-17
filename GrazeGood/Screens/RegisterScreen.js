@@ -1,7 +1,12 @@
 import React from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert, ActivityIndicator, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, Alert, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Animated, {
+  LinearTransition,
+  SlideInRight,
+  SlideOutLeft
+} from 'react-native-reanimated';
 
 import Colours from "../styles/colours.js"
 import Styles from "../styles/styles.js"
@@ -13,6 +18,15 @@ export default function RegisterScreen( { navigation, setUser } ) {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState(0);
+
+  const nextStep = () => {
+    if (!canContinue()) return;
+    setStep((prev) => prev + 1);
+  }
+  const prevStep = () => {
+    setStep((prev) => prev - 1);
+  }
 
   const API_BASE = "https://grazegood.onrender.com";
   async function handleRegister() {
@@ -55,122 +69,154 @@ export default function RegisterScreen( { navigation, setUser } ) {
       setLoading(false);
     }
   }
+  function canContinue() {
+    if (step === 1) {
+      return username.trim().length > 0;
+    }
+
+    if (step === 2) {
+      return (
+        firstName.trim().length > 0 &&
+        lastName.trim().length > 0
+      );
+    }
+
+    if (step === 3) {
+      return email.trim().length > 0;
+    }
+
+    if (step === 4) {
+      return password.trim().length > 0;
+    }
+
+    return true;
+  }
+  function renderStep() {
+  if (step === 0) {
+    return (
+      <>
+        <Text style={[Styles.Title, { marginBottom: 0 }]}>Welcome to GrazeGood</Text>
+        <View style={Styles.divider} />
+        <Text style={[Styles.welcomeText, { fontWeight: "bold" }]}>
+          Positive Environment, Positive Life
+        </Text>
+        <Text style={Styles.welcomeText}>Scan Products</Text>
+        <Text style={Styles.welcomeText}>Understand Ingredients</Text>
+        <Text style={Styles.welcomeText}>Make Better Choices</Text>
+      </>
+    );
+  }
+
+  if (step === 1) {
+    return (
+      <>
+        <Text style={Styles.Title}>Choose a username</Text>
+        <TextInput
+          style={Styles.input}
+          placeholder="Enter Username"
+          value={username}
+          onChangeText={setUsername}
+          autoCapitalize="none"
+        />
+      </>
+    );
+  }
+
+  if (step === 2) {
+    return (
+      <>
+        <Text style={Styles.Title}>What's your name?</Text>
+        <TextInput
+          style={Styles.input}
+          placeholder="First Name"
+          value={firstName}
+          onChangeText={setFirstName}
+        />
+        <TextInput
+          style={Styles.input}
+          placeholder="Last Name"
+          value={lastName}
+          onChangeText={setLastName}
+        />
+      </>
+    );
+  }
+
+  if (step === 3) {
+    return (
+      <>
+        <Text style={Styles.Title}>What's your email?</Text>
+        <TextInput
+          style={Styles.input}
+          placeholder="Enter Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+      </>
+    );
+  }
+
+  if (step === 4) {
+    return (
+      <>
+        <Text style={Styles.Title}>Create a password</Text>
+        <TextInput
+          style={Styles.input}
+          placeholder="Enter Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+      </>
+    );
+  }
+}
   return (
-    <View style={Styles.StaticPage}>
+    <View style={[Styles.StaticPage, { justifyContent: "center"}]}>
+        <Animated.View
+          key={step}
+          layout={LinearTransition.springify()}
+          entering={SlideInRight.duration(400)}
+          exiting={SlideOutLeft.duration(300)}
+          style={{width: "100%, alignItems: center"}}
+        >
+      <View style={Styles.InputContainer}>
 
-    <View style={Styles.InputContainer}>
-      <Text style={Styles.Title}>Enter Your Details</Text>
-      <TextInput
-      style={Styles.input}
-      placeholder="Enter Username"
-      value={username}
-      onChangeText={setUsername}
-      autoCapitalize="none"
-      />
+          {renderStep()}
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          {step > 0 && (
+            <TouchableOpacity style={Styles.Button} onPress={prevStep}>
+              <Text style={Styles.ButtonText}>Back</Text>
+            </TouchableOpacity>
+          )}
 
-      <TextInput
-      style={Styles.input}
-      placeholder="Enter First Name"
-      value={firstName}
-      onChangeText={setFirstName}
-      />
+          <TouchableOpacity
+            style={[Styles.Button, !canContinue() && { opacity: 0.5 }]}
+            onPress={step === 4 ? handleRegister : nextStep}
+            disabled={!canContinue() ||loading}
+          >
+            <Text style={Styles.ButtonText}>
+              {step === 4 ? "Register" : "Continue"}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-      <TextInput
-      style={Styles.input}
-      placeholder="Enter Last Name"
-      value={lastName}
-      onChangeText={setLastName}
-      />
-
-      <TextInput
-      style={Styles.input}
-      placeholder="Enter Email"
-      value={email}
-      onChangeText={setEmail}
-      keyboardType="email-address"
-      />
-
-      <TextInput
-      style={Styles.input}
-      placeholder="Enter Password"
-      value={password}
-      onChangeText={setPassword}
-      secureTextEntry={true}
-      />
-
-      <TouchableOpacity
-      style={Styles.Button}
-      onPress={handleRegister}
-      >
-        <Text style={Styles.ButtonText}>Register</Text>
-      </TouchableOpacity>
+        {loading && <ActivityIndicator />}
       </View>
-      <Text 
-      style={{ color: Colours.text, fontSize: 18, fontWeight: "bold", marginTop: 20, alignSelf: "center" }}
-      >
+
+      <Text style={{ color: Colours.text, fontSize: 18, fontWeight: "bold", marginTop: 20, alignSelf: "center" }}>
         Already Have an Account?
       </Text>
+
       <TouchableOpacity
-      style={[Styles.Button, { width: "40%", alignSelf: "center" }]}
-      onPress={() => navigation.navigate("Login")}
+        style={[Styles.Button, { width: "30%", alignSelf: "center" }]}
+        onPress={() => navigation.navigate("Login")}
       >
         <Text style={Styles.ButtonText}>Login</Text>
       </TouchableOpacity>
+    </Animated.View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#C3B59F",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: "#A0AF84",
-  },
-  input: {
-    width: 200,
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 10,
-    backgroundColor: "#d3c5b0ff",
-  },
-  InputContainer: {
-    borderRadius: 10,
-    padding: 20,
-    backgroundColor: "#2D4739",
-    width: "80%",
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 5,
-      height: 5
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    elevation: 5,
-
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  registerBtn: {
-    backgroundColor: '#108A2C',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    margin: 15
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  }
-})

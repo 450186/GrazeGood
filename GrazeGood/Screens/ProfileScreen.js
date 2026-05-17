@@ -145,7 +145,7 @@ export default function ProfileScreen({ setUser, navigation, setTabProfileImage 
 
   return (
     <ScrollView style={{flex: 1, width: "100%"}}
-    contentContainerStyle={{alignItems: "center", paddingBottom: 40}}>
+    contentContainerStyle={{alignItems: "center", paddingBottom: 20, flexGrow: 1, justifyContent: "space-between"}}>
       <Text style={Styles.Title}>Profile</Text>
 
       {profileImage && (

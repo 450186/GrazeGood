@@ -400,18 +400,30 @@ async function fetchProduct(productCode) {
           </View>
 
           <View style={Styles.SubContainer}>
-            <Text style={[Styles.text, {marginTop: 20}]}>
-              Scan a product to check how good it is for you and the environment!
-            </Text>
-            <Text style={Styles.text}>
-              Hit the save button to save your products and review them later in the Saved tab
-            </Text>
-            <Text style={Styles.text}>
-              The higher the eco score, the better for you and the environment!
-            </Text>
-            <Text style={[Styles.text, {textAlign: "left"}]}>
-              To start scanning, Open the scanner
-            </Text>
+            <View style={Styles.infoMessageContainer}>
+              <FontAwesome name="info-circle" size={20} color={Colours.text} style={Styles.infoIcon} />
+              <Text style={[Styles.infoMessage, {textAlign: "left"}]}>
+                Scan a product to check how good it is for you and the environment!
+              </Text>
+            </View>
+            <View style={Styles.infoMessageContainer}>
+              <FontAwesome name="info-circle" size={20} color={Colours.text} style={Styles.infoIcon} />
+              <Text style={[Styles.infoMessage, {textAlign: "left"}]}>
+                Hit the save button to save your products and review them later in the Saved tab
+              </Text>
+            </View>
+            <View style={Styles.infoMessageContainer}>
+              <FontAwesome name="info-circle" size={20} color={Colours.text} style={Styles.infoIcon} />
+              <Text style={[Styles.infoMessage, {textAlign: "left"}]}>
+                The higher the eco score, the better for you and the environment!
+              </Text>
+            </View>
+            <View style={Styles.infoMessageContainer}>
+              <FontAwesome name="info-circle" size={20} color={Colours.text} style={Styles.infoIcon} />
+              <Text style={[Styles.infoMessage, {textAlign: "left"}]}>
+                To start scanning, Open the scanner
+              </Text>
+            </View>
             {!isPremium && (
               <>
                 <Text style={Styles.text}>

@@ -613,5 +613,44 @@ export default StyleSheet.create({
 
         justifyContent: "center",
         alignItems: "center",
+    },
+    welcomeContainer: {
+        alignSelf: 'center',
+        backgroundColor: Colours.cards,
+        padding: 20,
+        borderRadius: 10,
+        width: "92%",
+        marginTop: 20,
+
+        shadowColor: "#414040ff",
+        shadowOffset: {
+        width: 1,
+        height: 1
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    welcomeText: {
+        color: Colours.text,
+        fontSize: 16,
+        textAlign: "center",
+        marginBottom: 5
+    },
+    infoMessageContainer: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginVertical: 20,
+        
+    },
+    infoIcon: {
+        marginRight: 10
+    },
+    infoMessage: {
+        color: Colours.text,
+        fontSize: 16,
+        maxWidth: "80%",
     }
 })

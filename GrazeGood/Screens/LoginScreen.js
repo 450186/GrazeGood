@@ -10,6 +10,9 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import Colours from "../styles/colours.js";
+import Styles from "../styles/styles.js";
+
 export default function LoginScreen({ navigation, setUser }) {
   const [username, setUsernameLocal] = useState("");
   const [password, setPassword] = useState("");
@@ -55,11 +58,11 @@ export default function LoginScreen({ navigation, setUser }) {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[Styles.StaticPage, { justifyContent: "center" }]}>
 
-    <View style={styles.InputContainer}>
+    <View style={Styles.InputContainer}>
         <TextInput
-          style={styles.input}
+          style={Styles.input}
           placeholder="Username"
           value={username}
           onChangeText={setUsernameLocal}
@@ -67,7 +70,7 @@ export default function LoginScreen({ navigation, setUser }) {
         />
 
         <TextInput
-          style={styles.input}
+          style={Styles.input}
           placeholder="Password"
           value={password}
           onChangeText={setPassword}
@@ -75,21 +78,21 @@ export default function LoginScreen({ navigation, setUser }) {
         />
 
         <TouchableOpacity
-          style={styles.loginBtn}
+          style={Styles.Button}
           onPress={handleLogin}
         >
-          <Text style={styles.buttonText}>{loading ? "Loading..." : "Login"}</Text>
+          <Text style={Styles.ButtonText}>{loading ? "Loading..." : "Login"}</Text>
         </TouchableOpacity>
       </View>
 
       <View style={{ marginTop: 12 }}>
-      <Text style={{ color: "#2D4739", fontSize: 18, fontWeight: "bold" }}>Don't have an account?</Text>
+      <Text style={{ color: Colours.text, fontSize: 18, fontWeight: "bold", alignSelf: "center" }}>Don't have an account?</Text>
 
       <TouchableOpacity
-        style={styles.loginBtn}
+        style={[Styles.Button, {width: "30%", alignSelf: "center"}]}
         onPress= { () => navigation.navigate("Register") }
       >
-        <Text style={styles.buttonText}>Register</Text>
+        <Text style={Styles.ButtonText}>Register</Text>
       </TouchableOpacity>
       </View>
     </View>
