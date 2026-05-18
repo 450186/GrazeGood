@@ -1,14 +1,90 @@
 import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
 import { useEffect, useState } from "react";
+import Svg, { Circle } from "react-native-svg";
+import Animated, {
+  useSharedValue,
+  useAnimatedProps,
+  withTiming
+} from "react-native-reanimated";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 
 import Colours from "../styles/colours.js";
 import Styles from "../styles/styles.js";
 
+
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 export default function ProductScreen({ route }) {
   const { barcode } = route.params;
   const [product, setProduct] = useState(null);
   const [ecoReason, setEcoReason] = useState(null);
+  const [displayScore, setDisplayScore] = useState(0);
+
+  const ecoScore = product?.eco?.ecoScore ?? null;
+  const ingredientDetails = product?.eco?.ingredientDetails ?? [];
+
+  const scoreColor =
+  ecoScore == null
+    ? Colours.text
+    : ecoScore <= 30
+    ? Colours.high
+    : ecoScore <= 69
+    ? Colours.medium
+    : Colours.low;
+
+  const scoreGlow = 
+  ecoScore == null
+    ? Colours.text
+    : ecoScore <= 30
+    ? "#E40C0C"
+    : ecoScore <= 69
+    ? "#FF7700" 
+    : "#07BE0A";
+
+  const radius = 55;
+  const strokeWidth = 6;
+  const size = 130;
+  const center = size / 2;
+  const circumference = 2 * Math.PI * radius;
+
+  const ringProgress = useSharedValue(0);
+
+  const animationDuration = 1200;
+
+  useEffect(() => {
+    if (ecoScore == null) return;
+
+    setDisplayScore(0);
+
+    ringProgress.value = 0;
+    ringProgress.value = withTiming(ecoScore / 100, {
+      duration: animationDuration,
+    });
+
+    let currentStep = 0;
+    const steps = 40;
+    const end = ecoScore;
+    const stepTime = animationDuration / steps;
+
+    const timer = setInterval(() => {
+      currentStep++;
+
+      const progress = currentStep / steps;
+      const nextScore = Math.round(end * progress);
+
+      setDisplayScore(nextScore);
+
+      if (currentStep >= steps) {
+        setDisplayScore(end);
+        clearInterval(timer);
+      }
+    }, stepTime);
+
+    return () => clearInterval(timer);
+  }, [ecoScore]);
+
+    const animatedCircleProps = useAnimatedProps(() => ({
+      strokeDashoffset: circumference * (1 - ringProgress.value),
+    }));
 
   const API_BASE = "https://grazegood.onrender.com";
   function getLevel(value, type) {
@@ -50,26 +126,7 @@ export default function ProductScreen({ route }) {
       </View>
     );
   }
-    const badIngredients = {
-        high: ["beef", "veal", "lamb", "mutton", "goat", "palm oil", "palm fat", "palm kernel oil", "palm kernel fat"],
-        medium: ["pork", "bacon", "ham", "butter", "cheese", "cream", "high fructose corn syrup", "tuna", "shrimp", "prawn", "cocoa", "chocolate"],
-        low: ["glucose syrup", "invert sugar", "maltodextrin", "vegetable oil"]
-    };
 
-    function getIngredientImpact(ingredient) {
-        const text = ingredient.toLowerCase();
-
-        if(badIngredients.high.some(word => text.includes(word))) {
-            return "high";
-        }
-        if(badIngredients.medium.some(word => text.includes(word))) {
-            return "medium";
-        }
-        if(badIngredients.low.some(word => text.includes(word))) {
-            return "low";
-        }
-        return "none";
-    }
   function NutritionRow({ label, value, unit = "g", levelType, sub = false }) {
     if (value == null) return null;
     return (
@@ -197,25 +254,57 @@ export default function ProductScreen({ route }) {
       <Text style={Styles.ProductPageTitle}>{(product.product_name ?? "Unknown product").replace(/&quot;|&#039;/g, "'")}</Text>
       <Text style={Styles.Brand}>{product.brands ?? "Unknown brand"}</Text>
       <View style={Styles.ecoContainer}>
-        <View style={[
-        Styles.EcoCircle,
-        {
-          borderColor: product.eco?.ecoScore <= 30 ? Colours.high 
-          : product.eco?.ecoScore <= 69 ? Colours.medium 
-          : Colours.low,
-        }
-        ]}>
+      <View style={[Styles.EcoCircle, { shadowColor: scoreColor }]}>
+        <Svg width={size} height={size} style={{ position: "absolute" }}>
+          
+          <Circle
+            cx={center}
+            cy={center}
+            r={radius}
+            stroke="rgba(0,0,0,0.05)"
+            strokeWidth={strokeWidth}
+            fill="transparent"
+          />
+          <AnimatedCircle
+            cx={center}
+            cy={center}
+            r={radius}
+            stroke={scoreGlow}
+            strokeWidth={strokeWidth + 5}
+            strokeOpacity={0.5}
+            fill="transparent"
+            strokeDasharray={circumference}
+            animatedProps={animatedCircleProps}
+            strokeLinecap="round"
+            rotation="-90"
+            originX={center}
+            originY={center}
+          />
+
+          <AnimatedCircle
+            cx={center}
+            cy={center}
+            r={radius}
+            stroke={scoreColor}
+            strokeWidth={strokeWidth}
+            strokeOpacity={1}
+            fill="transparent"
+            strokeDasharray={circumference}
+            animatedProps={animatedCircleProps}
+            strokeLinecap="round"
+            rotation="-90"
+            originX={center}
+            originY={center}
+          />
+        </Svg>
+
         <View style={Styles.EcoScoreCircleContent}>
-        <Text style={[
-            Styles.productPageEcoScore,
-            product.eco?.ecoScore <= 30 && {color: Colours.high},
-            product.eco?.ecoScore <= 69 && product.eco?.ecoScore > 30 && {color: Colours.medium},
-            product.eco?.ecoScore >= 70 && {color: Colours.low}
-            
-            ]}>{product.eco?.ecoScore ?? "-"}</Text>
-        <Text style={Styles.ecoScoreLabel}>EcoScore</Text> 
+          <Text style={[Styles.productPageEcoScore, { color: scoreColor }]}>
+            {displayScore}
+          </Text>
+          <Text style={Styles.ecoScoreLabel}>EcoScore</Text>
         </View>
-        </View>
+      </View>
           {ScoreVerdict && (
           <Text style={[
             Styles.EcoScoreVerdict,
@@ -229,7 +318,7 @@ export default function ProductScreen({ route }) {
               <View key={index} style={Styles.warningChip}>
                 <FontAwesome6 name="flask" size={20} style={[
                   Styles.EcoReasonIcon,
-                  flag.impact === "medium" && {color: Colours.medium},
+                  flag.impact === "medium" && {color: "#FF7700"},
                   flag.impact === "high" && {color: Colours.high},
                   flag.impact === "low" && {color: Colours.low},
                 ]}/>
@@ -322,7 +411,13 @@ export default function ProductScreen({ route }) {
         <View style={Styles.ingredientsContainer}>
             {product.ingredients?.length > 0
             ? product.ingredients.map((ingredient, index) => {
-                const impact = getIngredientImpact(ingredient.text ?? "");
+                const cleanIngredient = ingredient.text ?? "";
+
+                const ingredientData = ingredientDetails.find((item) =>
+                  cleanIngredient.toLowerCase().includes(item.ingredient.toLowerCase())
+                );
+
+                const impact = ingredientData?.impact ?? "none";
                 return (
                     <View
                     key={index}
@@ -346,7 +441,7 @@ export default function ProductScreen({ route }) {
                             : Colours.text
                         }
                     />
-
+                  <View style={{flex: 1}}>
                     <Text
                         style={[
                         Styles.ingredientText,
@@ -357,12 +452,22 @@ export default function ProductScreen({ route }) {
                     >
                         {ingredient.text.replace(/_/g, " ").replace(/\s+/g, " ").trim()}
                     </Text>
+                    {ingredientData?.reason && (
+                        <Text style={Styles.ingredientReason}>
+                          {ingredientData.reason}
+                        </Text>
+                    )}
+                  </View>
                     </View>
                 );
             })
             : product.ingredients_text?.split(",").map((ing, index) => {
                 const clean = ing.trim();
-                const impact = getIngredientImpact(clean);
+                const ingredientData = ingredientDetails.find((item) =>
+                  clean.toLowerCase().includes(item.ingredient.toLowerCase())
+                );
+
+                const impact = ingredientData?.impact ?? "none";
 
                 return (
                 <View
@@ -379,15 +484,15 @@ export default function ProductScreen({ route }) {
                     size={16}
                     color={
                     impact === "high"
-                        ? {color: Colours.high}
+                        ? Colours.high
                         : impact === "medium"
-                        ? {color: Colours.medium}
+                        ? Colours.medium
                         : impact === "low"
-                        ? {color: Colours.low}
-                        : {color: Colours.text}
+                        ? Colours.low
+                        : Colours.text
                     }
                 />
-
+              <View style={{flex: 1}}>
                 <Text
                     style={[
                     Styles.ingredientText,
@@ -398,6 +503,12 @@ export default function ProductScreen({ route }) {
                 >
                     {clean}
                 </Text>
+                {ingredientData?.reason && (
+                    <Text style={Styles.ingredientReason}>
+                      {ingredientData.reason}
+                    </Text>
+                )}
+              </View>
                 </View>
                 )
             })}

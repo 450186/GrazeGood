@@ -377,8 +377,119 @@ function calculateEcoScore(product) {
         seaweed: 85,
     };
 
+    const ingredientInfo = {
+    beef: {
+        impact: "high",
+        reason: "Very high carbon footprint"
+    },
+    veal: {
+        impact: "high",
+        reason: "Very high carbon footprint"
+    },
+    lamb: {
+        impact: "high",
+        reason: "High methane emissions"
+    },
+    mutton: {
+        impact: "high",
+        reason: "High methane emissions"
+    },
+    goat: {
+        impact: "high",
+        reason: "High-impact meat ingredient"
+    },
+
+    "palm oil": {
+        impact: "high",
+        reason: "Linked to deforestation and habitat loss"
+    },
+    "palm fat": {
+        impact: "high",
+        reason: "Linked to deforestation and habitat loss"
+    },
+    "palm kernel oil": {
+        impact: "high",
+        reason: "Linked to deforestation and habitat loss"
+    },
+    "palm kernel fat": {
+        impact: "high",
+        reason: "Linked to deforestation and habitat loss"
+    },
+
+    pork: {
+        impact: "medium",
+        reason: "Moderate meat-related emissions"
+    },
+    bacon: {
+        impact: "medium",
+        reason: "Processed meat ingredient"
+    },
+    ham: {
+        impact: "medium",
+        reason: "Processed meat ingredient"
+    },
+
+    butter: {
+        impact: "medium",
+        reason: "Dairy ingredient with higher emissions"
+    },
+    cheese: {
+        impact: "medium",
+        reason: "Dairy ingredient with higher emissions"
+    },
+    cream: {
+        impact: "medium",
+        reason: "Dairy ingredient"
+    },
+
+    tuna: {
+        impact: "medium",
+        reason: "Commercial fishing has environmental impact"
+    },
+    shrimp: {
+        impact: "medium",
+        reason: "Often linked to damaging aquaculture"
+    },
+    prawn: {
+        impact: "medium",
+        reason: "Often linked to damaging aquaculture"
+    },
+
+    cocoa: {
+        impact: "medium",
+        reason: "Often linked to intensive farming"
+    },
+    chocolate: {
+        impact: "medium",
+        reason: "Cocoa supply chain concerns"
+    },
+
+    "high fructose corn syrup": {
+        impact: "medium",
+        reason: "Highly processed sweetener"
+    },
+
+    "glucose syrup": {
+        impact: "low",
+        reason: "Highly processed ingredient"
+    },
+    "invert sugar": {
+        impact: "low",
+        reason: "Processed sweetener"
+    },
+    maltodextrin: {
+        impact: "low",
+        reason: "Highly processed carbohydrate"
+    },
+    "vegetable oil": {
+        impact: "low",
+        reason: "Generic processed oil ingredient"
+    }
+    };
+
     let ingredientScore = 0;
     let ingredientsFound = 0;
+    let ingredientDetails = []
 
     if (product.ingredients_text) {
 
@@ -387,7 +498,15 @@ function calculateEcoScore(product) {
         Object.entries(ingredientScores).forEach(([ingredient, value]) => {
 
             if (ingredients.includes(ingredient)) {
+                const info = ingredientInfo[ingredient];
 
+                if (info) {
+                    ingredientDetails.push({
+                        ingredient,
+                        impact: info.impact,
+                        reason: info.reason
+                    });
+                }
                 ingredientScore += value;
                 ingredientsFound++;
                 if (
@@ -594,7 +713,8 @@ function calculateEcoScore(product) {
             ethicalPenalty,
             sustainabilityBonus,
             missingVariables: missing,
-            ecoReason: redFlags
+            ecoReason: redFlags,
+            ingredientDetails
         };
     }
 
@@ -609,7 +729,8 @@ function calculateEcoScore(product) {
         ethicalPenalty,
         sustainabilityBonus,
         missingVariables: missing,
-        ecoReason: redFlags
+        ecoReason: redFlags,
+        ingredientDetails
     };
 }
 

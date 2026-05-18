@@ -261,7 +261,8 @@ export default StyleSheet.create({
         color: Colours.text
     },
     EcoReason: {
-        textAlign: "center",
+        flex: 1,
+        textAlign: "left",
         color: Colours.text,
         fontSize: 16,
         fontWeight: "bold"
@@ -311,6 +312,7 @@ export default StyleSheet.create({
         backgroundColor: Colours.cards,
         borderRadius: 10,
         padding: 10,
+        marginTop: 20,
         width: "92%",
         margin: "auto",
 
@@ -663,27 +665,16 @@ export default StyleSheet.create({
         marginLeft: 20
     },
     EcoCircle: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
-        borderWidth: 6,
+        width: 130,
+        height: 130,
+        borderRadius: 65,
         justifyContent: "center",
         alignItems: "center",
         alignSelf: "center",
         marginTop: 20,
-
-        shadowColor: "#414040ff",
-        shadowOffset: {
-        width: 1,
-        height: 1
-        },
-        shadowOpacity: 0.5,
-        shadowRadius: 2,
-        elevation: 2,
     },
     EcoScoreCircleContent: {
-        display: "flex",
-        flexDirection: "column",
+        position: "absolute",
         alignItems: "center",
         justifyContent: "center",
     },
@@ -703,14 +694,17 @@ export default StyleSheet.create({
     warningChip: {
         backgroundColor: "#fff3e6",
         borderRadius: 12,
-        paddingVertical: 10,
+        paddingVertical: 12,
         paddingHorizontal: 14,
         marginTop: 10,
+
         justifyContent: "center",
-        display: "flex",
-        flexDirection: "row",
         alignItems: "flex-start",
-        width: "92%",
+
+        flexDirection: "row",
+        alignItems: "center",
+
+        width: "80%",
         alignSelf: "center",
 
         shadowColor: "#414040ff",
@@ -723,10 +717,8 @@ export default StyleSheet.create({
         elevation: 2,
     },
     EcoReasonIcon: {
-        marginLeft: 10,
-        marginTop: 10,
+        marginHorizontal: 14,
         color: Colours.text,
-        opacity: 0.6,
     },
     ProductPageTitle: {
         color: Colours.text,
@@ -736,10 +728,17 @@ export default StyleSheet.create({
         textAlign: "center",
     },
     EcoScoreVerdict: {
+        marginTop: 20,
         fontSize: 16,
         fontWeight: "500",
         marginHorizontal: 10,
         textAlign: "center",
         opacity: 0.85
-    }
+    },
+    ingredientReason: {
+        color: Colours.text,
+        fontSize: 13,
+        opacity: 0.65,
+        marginTop: 2,
+    },
 })
