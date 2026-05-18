@@ -47,7 +47,7 @@ export default StyleSheet.create({
     },
     Brand: {
         color: Colours.text,
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: "bold",
         textAlign: "center",
         marginBottom: 10,        
@@ -269,8 +269,8 @@ export default StyleSheet.create({
     EcoConfidence: {
       color: Colours.text,
       fontSize: 13,
-      opacity: 0.8,
-      marginTop: 2,
+      opacity: 0.6,
+      marginTop: 15,
       marginBottom: 4,
     },
     SavedFlatlist: {
@@ -329,6 +329,7 @@ export default StyleSheet.create({
         fontWeight: "bold",
         textAlign: "center",
         marginBottom: 5,
+        marginTop: 5
     },
     SectionTitle: {
         color: Colours.text,
@@ -401,6 +402,15 @@ export default StyleSheet.create({
         borderRadius: 15,
         alignSelf: "center",
         marginTop: 20,
+
+        shadowColor: "#414040ff",
+        shadowOffset: {
+        width: 1,
+        height: 1
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 2,
     },
     nutritionRow: {
         width: "100%",
@@ -421,7 +431,7 @@ export default StyleSheet.create({
     },
     productPageEcoScore: {
         color: Colours.text,
-        fontSize: 26,
+        fontSize: 45,
         fontWeight: "bold",
     },
     ingredientsContainer: {
@@ -640,16 +650,96 @@ export default StyleSheet.create({
     infoMessageContainer: {
         display: "flex",
         flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
+        alignItems: "flex-start",
         marginVertical: 20,
     },
     infoIcon: {
-        marginRight: 10
+        marginLeft: 20,
     },
     infoMessage: {
         color: Colours.text,
         fontSize: 16,
-        maxWidth: "80%",
+        flex: 1,
+        marginLeft: 20
+    },
+    EcoCircle: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        borderWidth: 6,
+        justifyContent: "center",
+        alignItems: "center",
+        alignSelf: "center",
+        marginTop: 20,
+
+        shadowColor: "#414040ff",
+        shadowOffset: {
+        width: 1,
+        height: 1
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    EcoScoreCircleContent: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    confidenceContainer: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        marginVertical: 20,
+    },
+    confidenceIcon: {
+        marginRight: 10,
+        marginTop: 10,
+        color: Colours.text,
+        opacity: 0.6,
+    },
+    warningChip: {
+        backgroundColor: "#fff3e6",
+        borderRadius: 12,
+        paddingVertical: 10,
+        paddingHorizontal: 14,
+        marginTop: 10,
+        justifyContent: "center",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "flex-start",
+        width: "92%",
+        alignSelf: "center",
+
+        shadowColor: "#414040ff",
+        shadowOffset: {
+        width: 1,
+        height: 1
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    EcoReasonIcon: {
+        marginLeft: 10,
+        marginTop: 10,
+        color: Colours.text,
+        opacity: 0.6,
+    },
+    ProductPageTitle: {
+        color: Colours.text,
+        fontSize: 26,
+        fontWeight: "bold",
+        marginBottom: 10,
+        textAlign: "center",
+    },
+    EcoScoreVerdict: {
+        fontSize: 16,
+        fontWeight: "500",
+        marginHorizontal: 10,
+        textAlign: "center",
+        opacity: 0.85
     }
 })

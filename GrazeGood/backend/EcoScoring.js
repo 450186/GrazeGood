@@ -411,7 +411,7 @@ function calculateEcoScore(product) {
                     if (value <= 40) {
                         redFlags.push({
                             impact: 'medium',
-                            message: `Contains ${ingredient}, increasing environmental impact`
+                            message: `Contains ${ingredient}`
                             
                         });
                     }

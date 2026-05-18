@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
 import { useEffect, useState } from "react";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 
 import Colours from "../styles/colours.js";
 import Styles from "../styles/styles.js";
@@ -160,6 +160,7 @@ export default function ProductScreen({ route }) {
     const hasNutriments = showNutrimentKeys.some(key => nutriments[key] != null);
 
     let confidenceMessage = null;
+    let ScoreVerdict = null;
 
     if (product.eco?.confidence >= 70) {
       confidenceMessage = "High confidence";
@@ -167,6 +168,14 @@ export default function ProductScreen({ route }) {
       confidenceMessage = "Some environmental data unavailable";
     } else if (product.eco?.confidence != null) {
       confidenceMessage = "EcoScore estimated from limited data";
+    }
+
+    if(product.eco?.ecoScore <= 30) {
+      ScoreVerdict = "High Environmental Impact";
+    } else if(product.eco?.ecoScore <= 69) {
+      ScoreVerdict = "Moderate Environmental Impact";
+    } else {
+      ScoreVerdict = "Low Environmental Impact";
     }
 
   return (
@@ -185,33 +194,64 @@ export default function ProductScreen({ route }) {
           style={Styles.Image}
         />
       )}
-      <Text style={Styles.Title}>{(product.product_name ?? "Unknown product").replace(/&quot;|&#039;/g, "'")}</Text>
+      <Text style={Styles.ProductPageTitle}>{(product.product_name ?? "Unknown product").replace(/&quot;|&#039;/g, "'")}</Text>
       <Text style={Styles.Brand}>{product.brands ?? "Unknown brand"}</Text>
       <View style={Styles.ecoContainer}>
+        <View style={[
+        Styles.EcoCircle,
+        {
+          borderColor: product.eco?.ecoScore <= 30 ? Colours.high 
+          : product.eco?.ecoScore <= 69 ? Colours.medium 
+          : Colours.low,
+        }
+        ]}>
+        <View style={Styles.EcoScoreCircleContent}>
         <Text style={[
             Styles.productPageEcoScore,
             product.eco?.ecoScore <= 30 && {color: Colours.high},
             product.eco?.ecoScore <= 69 && product.eco?.ecoScore > 30 && {color: Colours.medium},
             product.eco?.ecoScore >= 70 && {color: Colours.low}
+            
             ]}>{product.eco?.ecoScore ?? "-"}</Text>
         <Text style={Styles.ecoScoreLabel}>EcoScore</Text> 
-        {confidenceMessage && (
-          <Text style={Styles.EcoConfidence}>
-            {confidenceMessage}
-          </Text>
+        </View>
+        </View>
+          {ScoreVerdict && (
+          <Text style={[
+            Styles.EcoScoreVerdict,
+            product.eco?.ecoScore <= 30 && {color: Colours.high},
+            product.eco?.ecoScore <= 69 && product.eco?.ecoScore > 30 && {color: Colours.medium},
+            product.eco?.ecoScore >= 70 && {color: Colours.low}
+            ]}>{ScoreVerdict}</Text>
         )}
         {ecoReason?.map((flag, index) => {
             return (
-              <Text key={index} style={[
-                  Styles.EcoReason,
+              <View key={index} style={Styles.warningChip}>
+                <FontAwesome6 name="flask" size={20} style={[
+                  Styles.EcoReasonIcon,
                   flag.impact === "medium" && {color: Colours.medium},
                   flag.impact === "high" && {color: Colours.high},
                   flag.impact === "low" && {color: Colours.low},
-                  ]}>
-                  {flag.message}
-              </Text>
+                ]}/>
+                <Text key={index} style={[
+                    Styles.EcoReason,
+                    flag.impact === "medium" && {color: Colours.medium},
+                    flag.impact === "high" && {color: Colours.high},
+                    flag.impact === "low" && {color: Colours.low},
+                    ]}>
+                    {flag.message}
+                </Text>
+              </View>
             )
         })}
+        {confidenceMessage && (
+          <View style={Styles.confidenceContainer}>
+            <FontAwesome name="exclamation-triangle" size={13} style={Styles.confidenceIcon} />
+            <Text style={Styles.EcoConfidence}>
+              {confidenceMessage}
+            </Text>
+          </View>
+        )}
       </View>
       <View style={[Styles.divider, {marginTop: 20}]} />
       {hasNutriments && (
