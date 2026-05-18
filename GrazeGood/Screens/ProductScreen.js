@@ -177,6 +177,26 @@ export default function ProductScreen({ route }) {
     product.ingredients?.length > 0 || 
     product.ingredients_text?.trim()?.length > 0;
 
+    const cleanedIngredients = product.ingredients?.filter((ingredient) => {
+      const text = ingredient.text?.toLowerCase().trim() ?? "";
+
+      return (
+        !text.includes("ingredients") &&
+        !text.includes("contact") &&
+        !text.includes("www") &&
+        !text.includes(".com") &&
+        !text.includes("get in touch") &&
+        !text.includes("po box") &&
+        !text.includes("uk ltd") &&
+        !text.includes("telephone") &&
+        !text.includes("consumer") &&
+        !text.includes("visit") &&
+        !/\d{5,}/.test(text) &&
+        text.length > 2 &&
+        text.length < 40
+      );
+    }) ?? [];
+
     const nutriments = product.nutriments ?? {};
     const productText = [
       product.product_name,
@@ -410,11 +430,11 @@ export default function ProductScreen({ route }) {
         <Text style={Styles.SectionTitle}>Ingredients</Text>
         <View style={Styles.ingredientsContainer}>
             {product.ingredients?.length > 0
-            ? product.ingredients.map((ingredient, index) => {
+            ? cleanedIngredients.map((ingredient, index) => {
                 const cleanIngredient = ingredient.text ?? "";
 
                 const ingredientData = ingredientDetails.find((item) =>
-                  cleanIngredient.toLowerCase().includes(item.ingredient.toLowerCase())
+                  cleanIngredient.toLowerCase().text.includes(item.ingredient.toLowerCase())
                 );
 
                 const impact = ingredientData?.impact ?? "none";
@@ -450,7 +470,13 @@ export default function ProductScreen({ route }) {
                         impact === "high" && Styles.ingredientTextHigh,
                         ]}
                     >
-                        {ingredient.text.replace(/_/g, " ").replace(/\s+/g, " ").trim()}
+                      {ingredient.text
+                        .replace(/_/g, " ")
+                        .replace(/\s+/g, " ")
+                        .trim()
+                        .toLowerCase()
+                        .replace(/\b\w/g, c => c.toUpperCase())
+                      }
                     </Text>
                     {ingredientData?.reason && (
                         <Text style={Styles.ingredientReason}>
