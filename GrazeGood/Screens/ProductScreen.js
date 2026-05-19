@@ -1,10 +1,13 @@
-import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from "react-native";
 import { useEffect, useState } from "react";
 import Svg, { Circle } from "react-native-svg";
 import Animated, {
   useSharedValue,
   useAnimatedProps,
-  withTiming
+  withTiming,
+  LinearTransition,
+  FadeInDown,
+  FadeOutUp
 } from "react-native-reanimated";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 
@@ -18,9 +21,12 @@ export default function ProductScreen({ route }) {
   const [product, setProduct] = useState(null);
   const [ecoReason, setEcoReason] = useState(null);
   const [displayScore, setDisplayScore] = useState(0);
+  const [showAll, setShowAll] = useState(false);
+  const [showBreakdown, setShowBreakdown] = useState(false);
 
   const ecoScore = product?.eco?.ecoScore ?? null;
   const ingredientDetails = product?.eco?.ingredientDetails ?? [];
+  const ecoBreakdown = product?.eco?.ecoBreakdown ?? [];
 
   const scoreColor =
   ecoScore == null
@@ -179,7 +185,6 @@ export default function ProductScreen({ route }) {
 
     const cleanedIngredients = product.ingredients?.filter((ingredient) => {
       const text = ingredient.text?.toLowerCase().trim() ?? "";
-
       return (
         !text.includes("ingredients") &&
         !text.includes("contact") &&
@@ -196,6 +201,35 @@ export default function ProductScreen({ route }) {
         text.length < 40
       );
     }) ?? [];
+
+    const sortedIngredients = [...cleanedIngredients].sort((a, b) => {
+    const aText = a.text?.toLowerCase() ?? "";
+    const bText = b.text?.toLowerCase() ?? "";
+
+    const aData = ingredientDetails.find((item) =>
+      aText.includes(item.ingredient.toLowerCase())
+    );
+
+    const bData = ingredientDetails.find((item) =>
+      bText.includes(item.ingredient.toLowerCase())
+    );
+
+    const priority = {
+      high: 3,
+      medium: 2,
+      low: 1,
+      none: 0,
+    };
+
+    const aPriority = priority[aData?.impact ?? "none"];
+    const bPriority = priority[bData?.impact ?? "none"];
+
+    return bPriority - aPriority;
+  });
+
+    const visibleIngredients = showAll 
+    ? sortedIngredients
+    : sortedIngredients.slice(0, 5);
 
     const nutriments = product.nutriments ?? {};
     const productText = [
@@ -362,6 +396,53 @@ export default function ProductScreen({ route }) {
           </View>
         )}
       </View>
+      <TouchableOpacity
+        onPress={() => {
+          setShowBreakdown(!showBreakdown)
+        }}
+        style={Styles.breakdownButton}
+      >
+        <Text style={Styles.breakdownButtonText}>
+          Why this score?
+        </Text>
+        <FontAwesome name={showBreakdown ? "caret-up" : "caret-down"} size={15} color={Colours.text} />
+      </TouchableOpacity>
+        {showBreakdown && (
+          <Animated.View
+            entering={FadeInDown.duration(250)}
+            exiting={FadeOutUp.duration(200)}
+            layout={LinearTransition.springify()}
+            style={Styles.breakdownContainer}
+          >
+            {ecoBreakdown.length > 0 ? (
+              ecoBreakdown.map((item, index) => (
+                <View key={index} style={Styles.warningChipSmall}>
+                  <FontAwesome6
+                    name={item.impact === "low" ? "circle-check" : "triangle-exclamation"}
+                    size={20}
+                    color={
+                      item.impact === "low"
+                        ? Colours.low
+                        : item.impact === "medium"
+                        ? Colours.medium
+                        : Colours.high
+                    }
+                    style={{ marginRight: 10 }}
+                  />
+
+                  <View style={{ flex: 1 }}>
+                    <Text style={Styles.breakdownTitle}>{item.title}</Text>
+                    <Text style={Styles.breakdownText}>{item.reason}</Text>
+                  </View>
+                </View>
+              ))
+            ) : (
+              <Text style={Styles.breakdownText}>
+                No major sustainability concerns detected.
+              </Text>
+            )}
+          </Animated.View>
+        )}
       <View style={[Styles.divider, {marginTop: 20}]} />
       {hasNutriments && (
         <>
@@ -430,11 +511,11 @@ export default function ProductScreen({ route }) {
         <Text style={Styles.SectionTitle}>Ingredients</Text>
         <View style={Styles.ingredientsContainer}>
             {product.ingredients?.length > 0
-            ? cleanedIngredients.map((ingredient, index) => {
+            ? visibleIngredients.map((ingredient, index) => {
                 const cleanIngredient = ingredient.text ?? "";
 
                 const ingredientData = ingredientDetails.find((item) =>
-                  cleanIngredient.toLowerCase().text.includes(item.ingredient.toLowerCase())
+                  cleanIngredient.toLowerCase().includes(item.ingredient.toLowerCase())
                 );
 
                 const impact = ingredientData?.impact ?? "none";
@@ -538,6 +619,17 @@ export default function ProductScreen({ route }) {
                 </View>
                 )
             })}
+            {cleanedIngredients.length > 5 && (
+              <TouchableOpacity
+                onPress={() => {
+                setShowAll(!showAll)
+              }}
+              style={Styles.showAllBtn}>
+                <Text style={Styles.showAllText}>
+                  {showAll ? "Show less" : "Show {} more".replace("{}", cleanedIngredients.length - 5)}
+                </Text>
+              </TouchableOpacity>
+            )}
         </View>
         </>
       )}

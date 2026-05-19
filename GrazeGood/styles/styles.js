@@ -741,4 +741,114 @@ export default StyleSheet.create({
         opacity: 0.65,
         marginTop: 2,
     },
+    showAllBtn: {
+        backgroundColor: Colours.button,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        marginVertical: 10,
+        alignSelf: "center",
+    },
+    showAllText: {
+        color: "white",
+        fontWeight: "bold",
+        fontSize: 16
+    },
+    breakdownButton: {
+        marginTop: 10,
+        marginBottom: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+        borderRadius: 20,
+        backgroundColor: Colours.cards,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+        width: "92%",
+        alignSelf: "center",
+        justifyContent: "space-between",
+
+        shadowColor: "#414040ff",
+        shadowOffset: {
+        width: 1,
+        height: 1
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    breakdownButtonText: {
+        color: Colours.text,
+        fontSize: 18,
+        fontWeight: "bold",
+    },
+    breakdownContainer: {
+        width: "92%",
+        backgroundColor: Colours.cards,
+        borderRadius: 14,
+        padding: 14,
+        marginBottom: 10,
+        alignSelf: "center",
+        marginTop: 0,
+
+        shadowColor: "#414040ff",
+        shadowOffset: {
+        width: 1,
+        height: 1
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 2,
+     },
+    breakdownRow: {
+        flexDirection: "row",
+        alignItems: "flex-start",
+        marginBottom: 8,
+        gap: 8,
+    },
+    breakdownText: {
+        flex: 1,
+        color: Colours.text,
+        fontSize: 13,
+        lineHeight: 18,
+        fontWeight: "bold"
+    },
+    warningChipSmall: {
+        backgroundColor: "#fff3e6",
+        borderRadius: 12,
+        paddingVertical: 12,
+        paddingHorizontal: 14,
+        marginTop: 10,
+
+        justifyContent: "center",
+        alignItems: "flex-start",
+
+        flexDirection: "row",
+        alignItems: "center",
+
+        width: "80%",
+        alignSelf: "center",
+
+        shadowColor: "#414040ff",
+        shadowOffset: {
+        width: 1,
+        height: 1
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    breakdownTitle: {
+        color: Colours.text,
+        fontSize: 15,
+        fontWeight: "bold",
+        marginBottom: 3,
+    },
+
+    breakdownText: {
+        color: Colours.text,
+        fontSize: 13,
+        opacity: 0.75,
+        flex: 1,
+    },
 })
