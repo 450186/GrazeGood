@@ -6,10 +6,10 @@ import Svg, { Circle } from "react-native-svg";
 import Animated, {
   useSharedValue,
   useAnimatedProps,
+  useAnimatedStyle,
   withTiming,
   LinearTransition,
-  FadeInDown,
-  FadeOutUp
+  Easing
 } from "react-native-reanimated";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 
@@ -32,6 +32,21 @@ export default function ProductScreen({ route }) {
   const ecoScore = product?.eco?.ecoScore ?? null;
   const ingredientDetails = product?.eco?.ingredientDetails ?? [];
   const ecoBreakdown = product?.eco?.ecoBreakdown ?? [];
+
+  const dropdownHeight = useSharedValue(0);
+  const dropdownOpacity = useSharedValue(0);
+
+  function toggleDropdown() {
+    const opening = dropdownHeight.value === 0;
+
+    dropdownHeight.value = withTiming(opening ? 300 : 0, {
+      duration: 250,
+    });
+
+    dropdownOpacity.value = withTiming(opening ? 1 : 0, {
+      duration: 250,
+    });
+  }
 
   const scoreColor =
   ecoScore == null
@@ -513,20 +528,29 @@ export default function ProductScreen({ route }) {
       <TouchableOpacity
         onPress={() => {
           setShowBreakdown(!showBreakdown)
+          toggleDropdown();
         }}
-        style={Styles.breakdownButton}
+        style={[Styles.breakdownButton, !showBreakdown && {borderRadius: 20}, showBreakdown && {shadowOffset: {width: 1, height: -1} }]}
       >
         <Text style={Styles.breakdownButtonText}>
           Why this score?
         </Text>
         <FontAwesome name={showBreakdown ? "caret-up" : "caret-down"} size={15} color={Colours.text} />
       </TouchableOpacity>
-      {showBreakdown && (
+        <View style={Styles.breakdownContainerShadow}>
         <Animated.View
-          entering={FadeInDown.duration(250)}
-          exiting={FadeOutUp.duration(200)}
-          layout={LinearTransition.springify()}
-          style={Styles.breakdownContainer}
+          layout={LinearTransition
+            .duration(250)
+            .easing(Easing.out(Easing.ease))
+          }
+          style={[Styles.breakdownContainer, 
+            !showBreakdown && {
+              height: 0,
+              opacity: 0,
+              paddingVertical: 0,
+              overflow: "hidden",
+            }
+          ]}
         >
           {ecoBreakdown.length > 0 ? (
             ecoBreakdown.map((item, index) => (
@@ -551,12 +575,17 @@ export default function ProductScreen({ route }) {
               </View>
             ))
           ) : (
-            <Text style={Styles.breakdownText}>
+            <Text style={Styles.noBreakdowns}>
               No major sustainability concerns detected.
             </Text>
           )}
         </Animated.View>
-      )}
+        </View>
+      <Animated.View
+      layout={LinearTransition
+        .duration(220)
+        .easing(Easing.out(Easing.ease))
+      }>
       <View style={[Styles.divider, {marginTop: 20}]} />
       {hasNutriments && (
         <>
@@ -747,6 +776,7 @@ export default function ProductScreen({ route }) {
         </View>
         </>
       )}
+      </Animated.View>
     </ScrollView>
   );
 }

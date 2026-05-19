@@ -756,10 +756,10 @@ export default StyleSheet.create({
     },
     breakdownButton: {
         marginTop: 10,
-        marginBottom: 10,
+
         paddingVertical: 10,
         paddingHorizontal: 16,
-        borderRadius: 20,
+
         backgroundColor: Colours.cards,
         flexDirection: "row",
         alignItems: "center",
@@ -767,6 +767,8 @@ export default StyleSheet.create({
         width: "92%",
         alignSelf: "center",
         justifyContent: "space-between",
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
 
         shadowColor: "#414040ff",
         shadowOffset: {
@@ -776,6 +778,7 @@ export default StyleSheet.create({
         shadowOpacity: 0.5,
         shadowRadius: 2,
         elevation: 2,
+        zIndex: 5
     },
     breakdownButtonText: {
         color: Colours.text,
@@ -785,21 +788,27 @@ export default StyleSheet.create({
     breakdownContainer: {
         width: "92%",
         backgroundColor: Colours.cards,
-        borderRadius: 14,
+        borderBottomLeftRadius: 14,
+        borderBottomRightRadius: 14,
         padding: 14,
         marginBottom: 10,
         alignSelf: "center",
-        marginTop: 0,
+        marginTop: -2,
+    },
+    breakdownContainerShadow: {
+        width: "100%",
+        alignSelf: "center",
 
         shadowColor: "#414040ff",
         shadowOffset: {
-        width: 1,
-        height: 1
+            width: 1,
+            height: 1,
         },
         shadowOpacity: 0.5,
         shadowRadius: 2,
+
         elevation: 2,
-     },
+    },
     breakdownRow: {
         flexDirection: "row",
         alignItems: "flex-start",
@@ -912,4 +921,13 @@ export default StyleSheet.create({
         fontSize: 18,
         fontWeight: "bold",
     },
+    noBreakdowns: {
+        color: Colours.text,
+        fontSize: 16,
+        fontWeight: "bold",
+        marginBottom: 3,
+        textAlign: "center",
+        justifyContent: "center",
+        alignSelf: "center"
+    }
 })
