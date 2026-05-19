@@ -1,5 +1,7 @@
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from "react-native";
 import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
 import Svg, { Circle } from "react-native-svg";
 import Animated, {
   useSharedValue,
@@ -14,15 +16,18 @@ import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import Colours from "../styles/colours.js";
 import Styles from "../styles/styles.js";
 
-
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 export default function ProductScreen({ route }) {
   const { barcode } = route.params;
   const [product, setProduct] = useState(null);
+
+  const [savedBy, setSavedBy] = useState(null);
   const [ecoReason, setEcoReason] = useState(null);
   const [displayScore, setDisplayScore] = useState(0);
   const [showAll, setShowAll] = useState(false);
   const [showBreakdown, setShowBreakdown] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const ecoScore = product?.eco?.ecoScore ?? null;
   const ingredientDetails = product?.eco?.ingredientDetails ?? [];
@@ -93,6 +98,77 @@ export default function ProductScreen({ route }) {
     }));
 
   const API_BASE = "https://grazegood.onrender.com";
+
+  const saveProduct = async () => {
+    if(!product || !barcode || !savedBy) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Missing required fields",
+        visibilityTime: 2000,
+      })
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      const res = await fetch(`${API_BASE}/save`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          savedBy,
+          barcode,
+          productName: product.product_name ?? null,
+          brands: product.brands ?? null,
+          imageUrl: product.image_front_small_url ?? null,
+          nutriments: product.nutriments ?? null,
+          nutrition_grades: product.nutrition_grades ?? null,
+          ingredients: product.ingredients ?? [],
+          ingredients_text: product.ingredients_text ?? null,
+          ingredients_language: product.ingredients_language ?? product.ingredients_lc ?? product.lang ?? null,
+          additives_tags: product.additives_tags ?? [],
+          nova_group: product.nova_group ?? product.nutriments?.["nova-group"] ?? null,
+          packaging_tags: product.packaging_tags ?? [],
+          countries_tags: product.countries_tags ?? [],
+          manufacturing_places: product.manufacturing_places ?? null,
+          categories_tags: product.categories_tags ?? [],
+          eco: {
+            ecoScore: product.eco?.ecoScore,
+            confidence: product.eco?.confidence,
+            ecoReason: product.eco?.ecoReason,
+            ingredientDetails: product.eco?.ingredientDetails,
+            ecoBreakdown: product.eco?.ecoBreakdown,
+          },
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setIsSaved(true);
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: "Product saved",
+          visibilityTime: 2000,
+        });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: data?.error ?? "Unknown error",
+          visibilityTime: 2000,
+        });
+      }
+    } catch (e) {
+      console.log("Error saving product", e);
+    } finally {
+      setSaving(false);
+    }
+  }
   function getLevel(value, type) {
     if (value == null) return null;
     let high;
@@ -160,6 +236,17 @@ export default function ProductScreen({ route }) {
         if (res.ok) {
             setProduct(data);
             setEcoReason(data.eco?.ecoReason ?? null);
+            const username = await AsyncStorage.getItem("username");
+            setSavedBy(username);
+            const savedRes = await fetch(`${API_BASE}/saved/${username}`);
+            const savedData = await savedRes.json();
+
+            if (savedRes.ok) {
+              const alreadySaved = savedData.some(
+                (item) => item.barcode === barcode
+              )
+              setIsSaved(alreadySaved);
+            }
         } else {
           console.log("Product loading error:", data?.error);
           setProduct(null);
@@ -188,6 +275,14 @@ export default function ProductScreen({ route }) {
       return (
         !text.includes("ingredients") &&
         !text.includes("contact") &&
+        !text.includes("lidl") &&
+        !text.includes("aldi") &&
+        !text.includes("tesco") &&
+        !text.includes("sainsbury") &&
+        !text.includes("asda") &&
+        !text.includes("waitrose") &&
+        !text.includes("morrison") &&
+        !text.includes("co-op") &&
         !text.includes("www") &&
         !text.includes(".com") &&
         !text.includes("get in touch") &&
@@ -307,6 +402,25 @@ export default function ProductScreen({ route }) {
       )}
       <Text style={Styles.ProductPageTitle}>{(product.product_name ?? "Unknown product").replace(/&quot;|&#039;/g, "'")}</Text>
       <Text style={Styles.Brand}>{product.brands ?? "Unknown brand"}</Text>
+      <TouchableOpacity
+        onPress={saveProduct}
+        style={[
+          Styles.saveButton,
+          isSaved && Styles.savedButton
+        ]}
+        disabled={isSaved || saving}
+      >
+        <Text style={Styles.saveButtonText}>
+          {saving ? "Saving..." : isSaved ? "Saved" : "Save product"}
+        </Text>
+
+        <FontAwesome
+          name={isSaved ? "check" : "bookmark"}
+          size={15}
+          color="white"
+        />
+      </TouchableOpacity>
+
       <View style={Styles.ecoContainer}>
       <View style={[Styles.EcoCircle, { shadowColor: scoreColor }]}>
         <Svg width={size} height={size} style={{ position: "absolute" }}>

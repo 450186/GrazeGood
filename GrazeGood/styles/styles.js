@@ -844,11 +844,72 @@ export default StyleSheet.create({
         fontWeight: "bold",
         marginBottom: 3,
     },
-
     breakdownText: {
         color: Colours.text,
         fontSize: 13,
         opacity: 0.75,
         flex: 1,
+    },
+    EcoChipContainer: {
+        backgroundColor: "#fff3e6",
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 14,
+        marginTop: 10,
+
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+
+        flexDirection: "column",
+        alignItems: "flex-start",
+
+
+        width: "95%",
+        alignSelf: "center",
+
+        shadowColor: "#414040ff",
+        shadowOffset: {
+        width: 1,
+        height: 1
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    EcoChipText: {
+        color: Colours.text,
+        fontSize: 16,
+        fontWeight: "bold",
+        marginBottom: 3,
+    },
+    EcoChipIcon: {
+        marginRight: 10
+    },
+    EcoChipSubText: {
+        color: Colours.text,
+        fontSize: 10,
+        opacity: 0.6,
+        fontWeight: "bold",
+        flex: 1,
+        marginTop: 5
+    },
+    saveButton: {
+        marginTop: 10,
+        marginBottom: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+        borderRadius: 20,
+        backgroundColor: Colours.button,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+        width: "50%",
+        alignSelf: "center",
+        justifyContent: "center",
+    },
+    saveButtonText: {
+        color: "white",
+        fontSize: 18,
+        fontWeight: "bold",
     },
 })

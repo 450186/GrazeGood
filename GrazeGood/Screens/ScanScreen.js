@@ -30,6 +30,7 @@ export default function ScanScreen( { navigation } ) {
   const [savedBy, setSavedBy] = useState(null);
   const [saving, setSaving] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
 useEffect(() => {
   pingAPI();
@@ -119,15 +120,19 @@ async function saveProduct() {
         manufacturing_places: product.manufacturing_places ?? null,
         categories_tags: product.categories_tags ?? [],
         eco: {
-          ecoScore,
-          ecoReason,
-        },
+          ecoScore: product.eco?.ecoScore,
+          confidence: product.eco?.confidence,
+          ecoReason: product.eco?.ecoReason,
+          ingredientDetails: product.eco?.ingredientDetails,
+          ecoBreakdown: product.eco?.ecoBreakdown,
+        }
       }),
     });
 
     const data = await res.json();
 
     if (res.ok) {
+      setIsSaved(true);
       Toast.show({
         type: "success",
         text1: "Success",
@@ -233,6 +238,15 @@ async function fetchProduct(productCode) {
       setEcoScore(data.eco?.ecoScore ?? null);
       setEcoReason(data.eco?.ecoReason ?? null);
       setCameraOpen(false);
+      const saveRes = await fetch(`${API_BASE}/saved/${savedBy}`)
+      const saveData = await saveRes.json();
+
+      if(saveRes.ok) {
+        const alreadySaved = saveData.some(
+          (item) => item.barcode === productCode
+        )
+        setIsSaved(alreadySaved);
+      }
       const scanRes = await fetch(`${API_BASE}/user/${savedBy}/useScan`,{
         method: "POST",
       })
@@ -249,6 +263,7 @@ async function fetchProduct(productCode) {
       setProduct(null);
       setEcoScore(null);
       setEcoReason(null);
+      setIsSaved(false);
       setError(data?.error ?? "Not found");
     }
   } catch (e) {
@@ -567,14 +582,22 @@ async function fetchProduct(productCode) {
             />
           )}
           <TouchableOpacity
-            onPress={(e) => {
-              e.stopPropagation();
-              saveProduct()
-            }}
-            style={Styles.Button}
-            disabled={saving}
+            onPress={saveProduct}
+            style={[
+              Styles.saveButton,
+              isSaved && Styles.savedButton
+            ]}
+            disabled={isSaved || saving}
           >
-            <Text style={Styles.ButtonText}>Save Product</Text>
+            <Text style={Styles.saveButtonText}>
+              {saving ? "Saving..." : isSaved ? "Saved" : "Save product"}
+            </Text>
+
+            <FontAwesome
+              name={isSaved ? "check" : "bookmark"}
+              size={15}
+              color="white"
+            />
           </TouchableOpacity>
         </View>
         </TouchableOpacity>

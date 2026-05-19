@@ -758,8 +758,11 @@ function calculateEcoScore(product) {
 
         const normalisedTerm = term.toLowerCase();
 
-        const matched =
-            searchableText.includes(normalisedTerm) ||
+        const exactOnlyTerms = ["asc", "msc", "fsc", "pefc"];
+
+        const matched = exactOnlyTerms.includes(normalisedTerm)
+        ? searchableItems.some(item => item === normalisedTerm)
+        : searchableText.includes(normalisedTerm) ||
             searchableItems.some(item => item === normalisedTerm);
 
         if (matched) {

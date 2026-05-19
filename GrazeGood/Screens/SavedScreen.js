@@ -120,7 +120,44 @@ export default function SavedScreen({ navigation }) {
                   </Text>
                   <Text style={{color: Colours.text, fontSize: 15, fontWeight: "bold", marginTop: 10}}>{item.brands}</Text>
                   <View style={Styles.divider}></View>
-                  <Text style={{color: Colours.text, fontSize: 18}}>Eco Score: {item.ecoScore ?? "N/A"}</Text>
+                  <View style={Styles.EcoChipContainer}>
+                    <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                      <FontAwesome5 name="leaf" size={20} style={Styles.EcoChipIcon} color={
+                        item.ecoScore <= 30 ?
+                        Colours.high :
+                        item.ecoScore <= 69 ?
+                        Colours.medium :
+                        Colours.low
+                        } />
+                      <Text style={[
+                        Styles.EcoChipText,
+                        {
+                          color: item.ecoScore <= 30 ?
+                          Colours.high :
+                          item.ecoScore <= 69 ?
+                          Colours.medium :
+                          Colours.low
+                        }
+                      ]}>Eco Score: {item.ecoScore ?? "N/A"}</Text>
+                      </View>
+                    <Text style={[
+                      Styles.EcoChipSubText,
+                      {
+                        color: item.ecoScore <= 30 ?
+                        Colours.high :
+                        item.ecoScore <= 69 ?
+                        Colours.medium :
+                        Colours.low
+                      }
+                      ]}>
+                      {item.ecoScore <= 30 ?
+                      "High Environmental Impact" 
+                      : item.ecoScore <= 69 ?
+                      "Moderate Environmental Impact"
+                      : "Low Environmental Impact"
+                      }
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>

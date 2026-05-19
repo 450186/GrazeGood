@@ -151,7 +151,7 @@ useEffect(() => {
       {loadingPOTW ? (
         <View style={Styles.loadingContainer}>
           <ActivityIndicator size="large" color={Colours.text} />
-          <Text style={Styles.loadingText}>Loading picks of the week...</Text>
+          <Text style={Styles.loadingText}>Loading products of the week...</Text>
         </View>
       ) : productOfTheWeek.length === 0 ? (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
