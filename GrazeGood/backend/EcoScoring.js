@@ -13,6 +13,15 @@ function calculateEcoScore(product) {
     }
     const missing = [];
     const redFlags = [];
+    const ecoBreakdown = [];
+
+    const addedBreakdowns = new Set();
+    function addBreakdown(key, item) {
+        if (addedBreakdowns.has(key)) return;
+        ecoBreakdown.push(item);
+        addedBreakdowns.add(key);
+    }
+
     let ethicalPenalty = 0;
     let sustainabilityBonus = 0;
 
@@ -190,6 +199,12 @@ function calculateEcoScore(product) {
                         message: `Unsustainable material used: ${cleanTag}`,
                         impact: "medium"
                     });
+                    addBreakdown("packaging-bad", {
+                        category: "Packaging",
+                        impact: "medium",
+                        title: "Less sustainable material used",
+                        reason: `${cleanTag} packaging can be difficult to recycle and may contribute to waste.`
+                    });
                 }
             }
         });
@@ -200,6 +215,14 @@ function calculateEcoScore(product) {
         if (averagePackagingScore != null) {
             const packagingScoreOutOf100 = (averagePackagingScore / 20) * 100;
             addWeightedSection(packagingScoreOutOf100, 20);
+            if (averagePackagingScore >= 14) {
+                addBreakdown("packaging-sustainable", {
+                    category: "Packaging",
+                    impact: "low",
+                    title: "More sustainable packaging",
+                    reason: "This product uses packaging materials that are easier to recycle or reuse."
+                });
+            }
         }
     } else {
         missing.push("packaging_tags");
@@ -265,6 +288,12 @@ function calculateEcoScore(product) {
                         impact: 'medium',
                         message: `Imported from ${cleanPlace}, increasing transport emissions`
                     });
+                    addBreakdown("manufacturing-imported", {
+                        category: "Manufacturing",
+                        impact: "medium",
+                        title: "Imported product",
+                        reason: `Transporting products from ${cleanPlace} may increase transport emissions.`
+                    });
                 }
             }
         });
@@ -275,6 +304,14 @@ function calculateEcoScore(product) {
 
         if(averageManufacturingScore != null) {
             addWeightedSection(averageManufacturingScore, 25);
+            if (averageManufacturingScore >= 70) {
+                addBreakdown("manufacturing-local", {
+                    category: "Manufacturing",
+                    impact: "low",
+                    title: "Lower transport impact",
+                    reason: "This product appears to be manufactured closer to the UK/EU region."
+                });
+            }
         }
     }
     else {
@@ -515,25 +552,49 @@ function calculateEcoScore(product) {
                 ingredient === "palm kernel oil" ||
                 ingredient === "palm kernel fat"
                 ) {
-                ethicalPenalty += 25;
-                redFlags.push({
-                    impact: "high",
-                    message: "Palm oil detected — linked to deforestation and habitat loss"
-                });
+                    ethicalPenalty += 25;
+
+                    redFlags.push({
+                        impact: "high",
+                        message: "Palm oil detected — linked to deforestation and habitat loss"
+                    });
+
+                    addBreakdown("ingredients-palm-oil", {
+                        category: "Ingredients",
+                        impact: "high",
+                        title: "Palm oil detected",
+                        reason: "Palm oil production is linked to deforestation and habitat loss."
+                    });
+
                 } else if (value <= 20) {
+
                     redFlags.push({
                         impact: 'high',
                         message: `High-impact ingredient detected: ${ingredient}`
                     });
-                }
-                else {
-                    if (value <= 40) {
-                        redFlags.push({
-                            impact: 'medium',
-                            message: `Contains ${ingredient}`
-                            
-                        });
-                    }
+
+                    addBreakdown("ingredients-high", {
+                        category: "Ingredients",
+                        impact: "high",
+                        title: "High impact ingredient detected",
+                        reason: `${ingredient} has a higher environmental footprint than many alternatives.`
+                    });
+
+                } else if (value <= 40) {
+
+                    redFlags.push({
+                        impact: 'medium',
+                        message: `Contains ${ingredient}`
+                    });
+
+                } else if (value >= 85) {
+
+                    addBreakdown("ingredients-positive", {
+                        category: "Ingredients",
+                        impact: "low",
+                        title: "Lower-impact ingredients detected",
+                        reason: `${ingredient} generally has a lower environmental footprint than many animal-based ingredients.`
+                    });
                 }
             }
         });
@@ -663,7 +724,21 @@ function calculateEcoScore(product) {
             impact: "low",
             message: "Minimally processed food"
         });
+        addBreakdown("processing-minimal", {
+            category: "Processing",
+            impact: "low",
+            title: "Minimally processed",
+            reason: "This product contains fewer processed ingredients and additives."
+        });
     }
+    if (Number(product.nova_group) === 4) {
+        addBreakdown("processing-ultra", {
+            category: "Processing",
+            impact: "medium",
+            title: "Ultra-processed product",
+            reason: "Highly processed foods often require more industrial processing and additives."
+        });
+}
 
     const searchableItems = [
         ...(product.categories_tags || []),
@@ -690,16 +765,47 @@ function calculateEcoScore(product) {
         if (matched) {
             sustainabilityBonus += data.bonus;
 
-            if (!addedMessages.has(data.message)) {
-                redFlags.push({
-                    impact: "low",
-                    message: data.message
-                });
+        if (!addedMessages.has(data.message)) {
+            redFlags.push({
+                impact: "low",
+                message: data.message
+            });
 
-                addedMessages.add(data.message);
+            addedMessages.add(data.message);
+        }
+            if (
+                term === "recyclable" ||
+                term === "compostable" ||
+                term === "plastic free" ||
+                term === "reusable" ||
+                term === "refill"
+            ) {
+            addBreakdown("packaging-good", {
+                category: "Packaging",
+                impact: "low",
+                title: "Better packaging choice",
+                reason: data.message
+            });
             }
+        if (
+            term === "organic" ||
+            term === "fair trade" ||
+            term === "rainforest alliance" ||
+            term === "msc" ||
+            term === "asc" ||
+            term === "b corp" ||
+            term === "b corporation"
+        ) {
+            addBreakdown("certifications-good", {
+                category: "Certifications",
+                impact: "low",
+                title: "Sustainability certifications",
+                reason: data.message
+            });
+        }
         }
     });
+
     sustainabilityBonus = Math.min(sustainabilityBonus, 20);
 
     let finalScore = weightTotal > 0
@@ -714,9 +820,18 @@ function calculateEcoScore(product) {
             sustainabilityBonus,
             missingVariables: missing,
             ecoReason: redFlags,
-            ingredientDetails
+            ingredientDetails,
+            ecoBreakdown
         };
     }
+        if (weightTotal < 70) {
+            addBreakdown("confidence-limited", {
+                category: "Confidence",
+                impact: "medium",
+                title: "Limited environmental data",
+                reason: "Some product sustainability information was unavailable."
+            });
+        }
 
     finalScore = Math.max(
         0,
@@ -730,7 +845,8 @@ function calculateEcoScore(product) {
         sustainabilityBonus,
         missingVariables: missing,
         ecoReason: redFlags,
-        ingredientDetails
+        ingredientDetails,
+        ecoBreakdown
     };
 }
 
