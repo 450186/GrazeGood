@@ -407,42 +407,42 @@ export default function ProductScreen({ route }) {
         </Text>
         <FontAwesome name={showBreakdown ? "caret-up" : "caret-down"} size={15} color={Colours.text} />
       </TouchableOpacity>
-        {showBreakdown && (
-          <Animated.View
-            entering={FadeInDown.duration(250)}
-            exiting={FadeOutUp.duration(200)}
-            layout={LinearTransition.springify()}
-            style={Styles.breakdownContainer}
-          >
-            {ecoBreakdown.length > 0 ? (
-              ecoBreakdown.map((item, index) => (
-                <View key={index} style={Styles.warningChipSmall}>
-                  <FontAwesome6
-                    name={item.impact === "low" ? "circle-check" : "triangle-exclamation"}
-                    size={20}
-                    color={
-                      item.impact === "low"
-                        ? Colours.low
-                        : item.impact === "medium"
-                        ? Colours.medium
-                        : Colours.high
-                    }
-                    style={{ marginRight: 10 }}
-                  />
+      {showBreakdown && (
+        <Animated.View
+          entering={FadeInDown.duration(250)}
+          exiting={FadeOutUp.duration(200)}
+          layout={LinearTransition.springify()}
+          style={Styles.breakdownContainer}
+        >
+          {ecoBreakdown.length > 0 ? (
+            ecoBreakdown.map((item, index) => (
+              <View key={index} style={Styles.warningChipSmall}>
+                <FontAwesome6
+                  name={item.impact === "low" ? "circle-check" : "triangle-exclamation"}
+                  size={20}
+                  color={
+                    item.impact === "low"
+                      ? Colours.low
+                      : item.impact === "medium"
+                      ? Colours.medium
+                      : Colours.high
+                  }
+                  style={{ marginRight: 10 }}
+                />
 
-                  <View style={{ flex: 1 }}>
-                    <Text style={Styles.breakdownTitle}>{item.title}</Text>
-                    <Text style={Styles.breakdownText}>{item.reason}</Text>
-                  </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={Styles.breakdownTitle}>{item.title}</Text>
+                  <Text style={Styles.breakdownText}>{item.reason}</Text>
                 </View>
-              ))
-            ) : (
-              <Text style={Styles.breakdownText}>
-                No major sustainability concerns detected.
-              </Text>
-            )}
-          </Animated.View>
-        )}
+              </View>
+            ))
+          ) : (
+            <Text style={Styles.breakdownText}>
+              No major sustainability concerns detected.
+            </Text>
+          )}
+        </Animated.View>
+      )}
       <View style={[Styles.divider, {marginTop: 20}]} />
       {hasNutriments && (
         <>
