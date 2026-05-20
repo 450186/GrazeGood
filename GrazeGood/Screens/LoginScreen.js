@@ -105,7 +105,7 @@ return (
             style={[Styles.Button, { width: "30%", alignSelf: "center" }]}
             onPress={() => navigation.navigate("Register")}
           >
-            <Text style={Styles.ButtonText}>Register</Text>
+            <Text style={[Styles.ButtonText, {fontSize: 16}]}>Register</Text>
           </TouchableOpacity>
         </View>
       </View>

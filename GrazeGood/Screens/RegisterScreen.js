@@ -216,7 +216,7 @@ export default function RegisterScreen( { navigation, setUser } ) {
             onPress={step === 4 ? handleRegister : nextStep}
             disabled={!canContinue() ||loading}
           >
-            <Text style={Styles.ButtonText}>
+            <Text style={[Styles.ButtonText, {fontSize: 16}]}>
               {step === 4 ? "Register" : "Continue"}
             </Text>
           </TouchableOpacity>

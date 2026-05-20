@@ -75,7 +75,17 @@ export default function TabNavigator({ setUser }) {
         {(props) => <HomeScreen {...props} setUser={setUser} />}
       </Tab.Screen>
 
-      <Tab.Screen name="Scan" component={ScanScreen} />
+      <Tab.Screen 
+      name="Scan"
+      component={ScanScreen}
+      listeners={({ navigation }) => ({
+        tabPress: (e) => {
+          navigation.navigate("Scan", {
+            resetScan: Date.now()
+          })
+        }
+      })}
+      />
       <Tab.Screen name="Saved" component={SavedScreen} />
 
       <Tab.Screen

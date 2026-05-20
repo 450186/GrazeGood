@@ -227,7 +227,7 @@ export default StyleSheet.create({
     },
     ButtonText: {
         color: "white",
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'center',
     },

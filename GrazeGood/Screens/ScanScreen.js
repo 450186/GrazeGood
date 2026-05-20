@@ -10,7 +10,7 @@ import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import Colours from '../styles/colours.js';
 import Styles from '../styles/styles.js';
 
-export default function ScanScreen( { navigation } ) {
+export default function ScanScreen( { navigation, route } ) {
   const scanLock = useRef(false);
   const [scanned, setScanned] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -31,6 +31,20 @@ export default function ScanScreen( { navigation } ) {
   const [saving, setSaving] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+
+useEffect(() => {
+  if (!route.params?.resetScan) return;
+
+  setCameraOpen(true);
+  setScanned(false);
+  setProduct(null);
+  setError(null);
+  setEcoScore(null);
+  setEcoReason(null);
+  setIsSaved(false);
+  scanLock.current = false;
+  setCanScan(true);
+}, [route.params?.resetScan]);
 
 useEffect(() => {
   pingAPI();
