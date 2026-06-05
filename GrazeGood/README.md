@@ -68,14 +68,9 @@ My contributions included:
 
 ## Screenshots
 
-### Home page
-![Home Screen](screenshots/Home.PNG)
-
-### Product Page 
-![Product Screen](screenshots/Product.PNG)
-
-### Saved Page
-![Saved Screen](screenshots/Saved.PNG)
+| Home Page | Product Page | Saved Page |
+|------|---------|---------|
+| ![](screenshots/Home.PNG) | ![](screenshots/Product.PNG) | ![](screenshots/Saved.PNG) |
 
 ## Future Improvements
 
