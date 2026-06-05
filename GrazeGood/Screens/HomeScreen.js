@@ -107,7 +107,15 @@ useEffect(() => {
             flexGrow: 1,
             justifyContent: products.length <= 2 ? "center" : "flex-start",
           }}
-          renderItem={({ item }) => (
+          renderItem={({ item }) => {
+            const ecoScore =
+              item.eco?.ecoScore ??
+              item.ecoScore ??
+              item.eco;
+
+              console.log("Item:", item);
+              console.log("Eco Score:", ecoScore);
+            return (
             <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => navigation.navigate("Product", { barcode: item.barcode })}
@@ -132,14 +140,23 @@ useEffect(() => {
                   >
                     {item.product_name.replace(/&quot;|&#039;/g, "'")}
                   </Text>
-                  <View style={Styles.EcoScoreContainer}>
+                  <View style={[Styles.EcoScoreContainer,
+                    {
+                      backgroundColor: ecoScore >= 70 ? 
+                      Colours.low : 
+                      ecoScore >= 40 ? 
+                      Colours.medium : 
+                      Colours.high
+                    }
+                   ]}>
                     <FontAwesome name="leaf" size={14} color={Colours.text} />
-                    <Text style={Styles.EcoScore}>Eco Score: {item.eco?.ecoScore ?? item.ecoScore ?? "-"}</Text>
+                    <Text style={Styles.EcoScore}>Eco Score: {ecoScore ?? "-"}</Text>
                   </View>
                 </View>
               </View>
             </TouchableOpacity>
-          )}
+            );
+          }}
         />
       )}
     </View>

@@ -138,7 +138,6 @@ export default StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
 
-        backgroundColor: Colours.accent,
         borderRadius: 100,
         gap: 5,
         padding: 5,
